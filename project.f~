@@ -19,8 +19,7 @@ BSC1_BASE 4 + 						CONSTANT STATUS
 BSC1_BASE 8 +						CONSTANT DLEN 			\ Data length
 BSC1_BASE C +						CONSTANT SLAVE			\ Slave Address	
 BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO	
-BSC1_BASE 14 +						CONSTANT DIV			\ Clock Divider
-BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
+
 
 
 : SHIFT	 					( offset value -- shifted_value )
@@ -133,7 +132,7 @@ BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
 : 4LSB						( -- )
 	F AND 4 LSHIFT ;			\ These are the 4 least significant bits
 	
-: 4LSB						( -- )
+: 4MSB						( -- )
 	F0 AND ;				\ These are the 4 most significant bits
 	
 : SEND_CMD					( cmd -- )

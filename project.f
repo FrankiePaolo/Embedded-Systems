@@ -33,7 +33,9 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	0 <> ;					\ If value is not 0 it returns TRUE
 	
 : MILLISECONDS 3E8 * ;				( seconds -- milliseconds )
+
 : MICROSECONDS F4240 * ;			( seconds -- microseconds )
+
 : CURRENT_TIME 					( -- time )
 	SYSTIMER_CL0 @ ;
 	
@@ -132,7 +134,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 : 4LSB						( -- )
 	F AND 4 LSHIFT ;			\ These are the 4 least significant bits
 	
-: 4LSB						( -- )
+: 4MSB						( -- )
 	F0 AND ;				\ These are the 4 most significant bits
 	
 : SEND_CMD					( cmd -- )
