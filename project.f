@@ -19,8 +19,7 @@ BSC1_BASE 4 + 						CONSTANT STATUS
 BSC1_BASE 8 +						CONSTANT DLEN 			\ Data length
 BSC1_BASE C +						CONSTANT SLAVE			\ Slave Address	
 BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO	
-BSC1_BASE 14 +						CONSTANT DIV			\ Clock Divider
-BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
+
 
 
 : SHIFT	 					( offset value -- shifted_value )
@@ -29,6 +28,9 @@ BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
 	1 SHIFT ;
 : ABS 						( n -- |n| )
 	DUP 0 > IF ELSE NEGATE THEN ;
+	
+: BIT_FLAG					( value -- flag )
+	0 <> ;					\ If value is not 0 it returns TRUE
 	
 : MILLISECONDS 3E8 * ;				( seconds -- milliseconds )
 : MICROSECONDS F4240 * ;			( seconds -- microseconds )
@@ -67,9 +69,9 @@ BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
 	GPPUDCLK0 @ AND GPPUDCLK0 ! ;
 
 
-
 \ The following words are used only for debugging
 \ To be updated with higher levels of abstraction
+
 
 : SET_ALT0_2					( -- )
 	GPIO_BASE 6 3 MASK_REGISTER 		\ We set GPIO 2 to ALT0
@@ -104,8 +106,9 @@ BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
 : WRITE_FIFO					( data -- ) 
 	FIFO ! ;				\ It puts data into the FIFO
 
-
-
+: DONE 						( -- flag )
+	STATUS 1 1 MASK_REGISTER 		\ If the transfer is compleate we get TRUE
+	2 AND BIT_FLAG ;
 
 : CHECK_STATUS 					( -- )
 	BEGIN					\ It checks that the transfer is done
@@ -116,6 +119,7 @@ BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
 
 \ The following words are written for the I2C protocol and the expander specifications
 
+
 : SEND						( data -- ) 
 	CLEAR_FIFO				\ It clears the FIFO
 	1 SET_DLEN 				\ We will write 1 byte into the FIFO
@@ -123,7 +127,7 @@ BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
 	SET_SLAVE				\ We set the slave address
 	WRITE_TRANSFER				\ We want to write
 	START_TRANSFER 				\ It starts the transfer
-	150 MICROSECONDS WAIT ;			\ UPDATE with the STATUS register flags
+	CHECK_STATUS ;				\ It checks that the transfer is done
 	
 : 4LSB						( -- )
 	F AND 4 LSHIFT ;			\ These are the 4 least significant bits
@@ -148,8 +152,9 @@ BSC1_BASE 18 +						CONSTANT DEL			\ Data Delay
 	DUP D + SEND
 	9 + SEND 
 	DROP ;
-	
-	
+
+
+\ The following words are the display functions
 
 	
 : FUNCTION_SET					( -- )
