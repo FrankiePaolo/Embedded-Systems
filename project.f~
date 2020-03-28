@@ -32,9 +32,11 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 : BIT_FLAG					( value -- flag )
 	0 <> ;					\ If value is not 0 it returns TRUE
 	
-: MILLISECONDS 3E8 * ;				( seconds -- milliseconds )
+: MILLISECONDS 					( seconds -- milliseconds )
+	3E8 * ;				
 
-: MICROSECONDS F4240 * ;			( seconds -- microseconds )
+: MICROSECONDS 					( seconds -- microseconds )
+	F4240 * ;			
 
 : CURRENT_TIME 					( -- time )
 	SYSTIMER_CL0 @ ;

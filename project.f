@@ -63,7 +63,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	SHIFT INVERT				\ Shifts those bits by starting_bit_position and then inverts the bits
 	SWAP @ AND ;				\ Performs a logic AND between the current content of the register and the mask
 	
-: SET_PUD_PI3					( GPPUDCLK0_MASK, UP/DOWN -- )
+: SET_PUD					( GPPUDCLK0_MASK, UP/DOWN -- )
 	GPPUD !
 	150_DELAY
 	DUP INVERT SWAP
