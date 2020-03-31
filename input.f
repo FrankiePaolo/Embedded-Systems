@@ -1,5 +1,10 @@
-\ We set the GPIOs as input and then we set the internal pull DOWN
+: FALLING_EDGE_DETECT_SET_9				( -- )
+	GPFEN0 9 1 MASK_REGISTER OR GPFEN0 ! ;
+	
+: FALLING_EDGE_DETECT_SET_10				( -- )
+	GPFEN0 10 1 MASK_REGISTER OR GPFEN0 ! ;
 
+\ We set the GPIOs as input and then we set the internal pull DOWN
 
 \ This is for GPIO 9 
 SET_IN_9
@@ -17,3 +22,10 @@ SET_ALT0_3
 
 \ We enable the BSC controller
 SET_I2CEN
+
+FALLING_EDGE_DETECT_SET_9
+FALLING_EDGE_DETECT_SET_10
+
+
+
+
