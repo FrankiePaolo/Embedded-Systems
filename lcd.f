@@ -43,16 +43,16 @@
 	28 SEND ;				\ D7-D6-D5-D4=0010 (LSB) BL=1 EN=0 RW=0 RS=0
 	
 : CLEAR_DISPLAY					( -- )
-	01 SEND_CMD ;				\ UPDATE with comments
+	01 SEND_CMD ;				\ It clears the display
 
 : DISPLAY_ON					( -- )
-	0F SEND_CMD ;				\ UPDATE with comments
+	0F SEND_CMD ;				\ It turns the display ON
 	
 : DISPLAY_SHIFT					( -- )
-	1F SEND_CMD ;				\ UPDATE with comments
+	1F SEND_CMD ;				\ It shifts the display
 	
 : LCD_INIT					( -- )
-	FUNCTION_SET				\ UPDATE with comments
+	FUNCTION_SET				\ It initializes the display
 	150 MICROSECONDS WAIT
 	DISPLAY_ON ;
 	
