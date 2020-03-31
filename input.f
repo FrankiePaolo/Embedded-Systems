@@ -5,9 +5,15 @@
 SET_IN_9
 GPPUDCLK0 9 1 MASK_REGISTER
 DOWN SET_PUD
+
 \ This is for GPIO 10
 SET_IN_10
 GPPUDCLK0 10 1 MASK_REGISTER
 DOWN SET_PUD
 
+\ BSC1 is on GPIO pins 2(SDA) and 3(SCL) , so we set them to ALT0
+SET_ALT0_2
+SET_ALT0_3
 
+\ We enable the BSC controller
+SET_I2CEN
