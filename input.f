@@ -30,6 +30,9 @@ VARIABLE CURRENT_VALUE
 
 
 
+
+
+
 : GET_NUMBER				\ reads digits until a byte has been inputed 
 
 	0 CURRENT_VALUE !

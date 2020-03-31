@@ -1,9 +1,7 @@
 VARIABLE CURRENT_VALUE
 
 : APPEND 						( n1 n2  -- 2n2 + n1  )
-	1 LSHIFT OR ;					\ n2 is always a single bit, so a more efficient OR 
-							\ operation is used in place of a sum.
-
+	1 LSHIFT OR ;					\ n2 is always a single bit, so a more efficient OR operation is used in place of a sum
 
 : FALLING_EDGE_DETECT_SET_9				( -- )
 	GPFEN0 9 1 MASK_REGISTER OR GPFEN0 ! ;
