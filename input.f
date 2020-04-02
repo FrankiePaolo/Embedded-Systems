@@ -5,10 +5,14 @@ VARIABLE SIZE
 
 
 : FALLING_EDGE_DETECT_SET_9				( -- )
-	GPFEN0 9 1 MASK_REGISTER OR GPFEN0 ! ;
+	GPFEN0 
+	9 1 MASK_REGISTER 
+	OR GPFEN0 ! ;
 	
 : FALLING_EDGE_DETECT_SET_10				( -- )
-	GPFEN0 10 1 MASK_REGISTER OR GPFEN0 ! ;
+	GPFEN0 
+	10 1 MASK_REGISTER 
+	OR GPFEN0 ! ;
 
 : SETUP_9 						( -- )		
 	SET_IN_9					\ We set the GPIOs as input and then we set the internal pull DOWN

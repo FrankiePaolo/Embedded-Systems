@@ -43,8 +43,6 @@ VARIABLE SIZE
 : CLEAR_PIN
 	0 GPFEN0 ! ; 
 
-
-
 : GET_INPUT						( -- )
 	0 CURRENT_VALUE !				\ reads digits until a byte has been inputed 
 	0 SIZE !					\ Initializes loop
