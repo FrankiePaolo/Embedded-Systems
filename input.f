@@ -7,12 +7,12 @@ VARIABLE SIZE
 : FALLING_EDGE_DETECT_SET_9				( -- )
 	GPFEN0 
 	9 1 MASK_REGISTER 
-	OR GPFEN0 ! ;
+	200 OR GPFEN0 ! ;
 	
 : FALLING_EDGE_DETECT_SET_10				( -- )
 	GPFEN0 
 	10 1 MASK_REGISTER 
-	OR GPFEN0 ! ;
+	400 OR GPFEN0 ! ;
 
 : SETUP_9 						( -- )		
 	SET_IN_9					\ We set the GPIOs as input and then we set the internal pull DOWN
@@ -34,28 +34,33 @@ VARIABLE SIZE
 	FALLING_EDGE_DETECT_SET_10 ;
 
 : READ_PIN						( -- 0/1 )	
-	GPFEN0 400 =					\ It leaves on the stack either 0 or 1
+	GPEDS0 @ 400 =					\ It leaves on the stack either 0 or 1
 	IF
 	0
 	ELSE
-	GPFEN0 200 =
+	GPEDS0 @ 200 =
 	IF
 	1
 	ELSE
 	THEN THEN ; 
 
 : CLEAR_PIN
-	0 GPFEN0 ! ; 
+	0 GPEDS0 ! ; 
 
 : GET_INPUT						( -- )
-	0 CURRENT_VALUE !				\ reads digits until a byte has been inputed 
+	0 CURRENT_VALUE !				\ Reads digits until a byte has been inputed 
 	0 SIZE !					\ Initializes loop
 	BEGIN
 		READ_PIN SIZE LSHIFT
-		CURRENT_VALUE @ READ_INPUT + CURRENT_VALUE ! 
+		CURRENT_VALUE @ + CURRENT_VALUE ! 
 		CLEAR_PIN
 		SIZE @ 1 + SIZE !
 		SIZE @ SIZE_REQUESTED =	
 	UNTIL ;
 
+: SETUP
+	SETUP_9
+	SETUP_10
+	SETUP_BSC
+	FALLING_EDGE_DETECT_SET ;
 
