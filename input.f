@@ -28,7 +28,7 @@ VARIABLE SIZE
 	SET_ALT0_2					\ BSC1 is on GPIO pins 2(SDA) and 3(SCL) , so we set them to ALT0
 	SET_ALT0_3
 	SET_I2CEN ;					\ We enable the BSC controller
-
+	
 : FALLING_EDGE_DETECT_SET				( -- )
 	FALLING_EDGE_DETECT_SET_9
 	FALLING_EDGE_DETECT_SET_10 ;
@@ -37,7 +37,7 @@ VARIABLE SIZE
 	600 GPEDS0 ! ; 
 
 : READ_PIN						( -- 0/1 )	
-	GPEDS0 @ 400 =					\ It leaves on the stack either 0 or 1
+	GPEDS0 @ 400 =					\ I	t leaves on the stack either 0 or 1
 	IF
 	0
 	ELSE
@@ -46,20 +46,28 @@ VARIABLE SIZE
 	1
 	ELSE
 	THEN THEN CLEAR_PIN ; 
+	
+: WAIT
+	BEGIN
+		READ_PIN 
+		SIZE @ LSHIFT				\ Reads digits until a byte has been inputed 
+		CURRENT_VALUE @ + CURRENT_VALUE ! 	\ Initializes loop
+		SIZE @ 1 + SIZE !
+	AGAIN ;
 
 : GET_INPUT						( -- )	
 	BEGIN
 		READ_PIN SIZE @ LSHIFT			\ Reads digits until a byte has been inputed 
 		CURRENT_VALUE @ + CURRENT_VALUE ! 	\ Initializes loop
 		SIZE @ 1 + SIZE !
-		SIZE @ SIZE_REQUESTED =	
+	SIZE @ SIZE_REQUESTED =	
 	UNTIL ;
 
 : SETUP
 	SETUP_9
 	SETUP_10
 	SETUP_BSC
-	FALLING_EDGE_DETECT_SET ;
+	FALLING_EDGE_DETECT_SET 
 	0 CURRENT_VALUE !				
 	0 SIZE ! ;					
 
