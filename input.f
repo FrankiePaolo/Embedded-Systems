@@ -47,12 +47,10 @@ VARIABLE SIZE
 	ELSE
 	THEN THEN CLEAR_PIN ; 
 
-: GET_INPUT						( -- )
-	0 CURRENT_VALUE !				\ Reads digits until a byte has been inputed 
-	0 SIZE !					\ Initializes loop
+: GET_INPUT						( -- )	
 	BEGIN
-		READ_PIN SIZE @ LSHIFT
-		CURRENT_VALUE @ + CURRENT_VALUE ! 
+		READ_PIN SIZE @ LSHIFT			\ Reads digits until a byte has been inputed 
+		CURRENT_VALUE @ + CURRENT_VALUE ! 	\ Initializes loop
 		SIZE @ 1 + SIZE !
 		SIZE @ SIZE_REQUESTED =	
 	UNTIL ;
@@ -62,4 +60,6 @@ VARIABLE SIZE
 	SETUP_10
 	SETUP_BSC
 	FALLING_EDGE_DETECT_SET ;
+	0 CURRENT_VALUE !				
+	0 SIZE ! ;					
 
