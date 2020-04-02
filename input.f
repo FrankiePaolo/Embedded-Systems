@@ -1,7 +1,8 @@
 VARIABLE CURRENT_VALUE
+VARIABLE SIZE 
+8 CONSTANT SIZE_REQUESTED
 
-: APPEND 						( n1 n2  -- 2n2 + n1  )
-	1 LSHIFT OR ;					\ n2 is always a single bit, so a more efficient OR operation is used in place of a sum
+
 
 : FALLING_EDGE_DETECT_SET_9				( -- )
 	GPFEN0 9 1 MASK_REGISTER OR GPFEN0 ! ;
@@ -28,36 +29,29 @@ VARIABLE CURRENT_VALUE
 	FALLING_EDGE_DETECT_SET_9
 	FALLING_EDGE_DETECT_SET_10 ;
 
+: READ_PIN						( -- 0/1 )	
+	GPFEN0 400 =					\ It leaves on the stack either 0 or 1
+	IF
+	0
+	ELSE
+	GPFEN0 200 =
+	IF
+	1
+	ELSE
+	THEN THEN ; 
 
+: CLEAR_PIN
+	0 GPFEN0 ! ; 
 
-
-
-
-: GET_NUMBER				\ reads digits until a byte has been inputed 
-
-	0 CURRENT_VALUE !
-	0											\ initializes loop
+: GET_INPUT						( -- )
+	0 CURRENT_VALUE !				\ reads digits until a byte has been inputed 
+	0 SIZE !					\ Initializes loop
 	BEGIN
-		>R 
-		PEEK_KEYPRESS DUP
-		?VALID					
-		IF
-			?DIGIT 
-			IF 
-				R> 1 + >R 
-				READ_KEYPRESS KEY>DIGIT 
-				CURRENT_VALUE @ APPEND 
-				STORE_VALUE 
-				RESULT SHOW
-			ELSE 
-				R> DROP WORD_SIZE >R		\ sets the loop termination condition
-			THEN
-		ELSE
-			DROP 
-		THEN 
-		R> DUP WORD_SIZE >=				\ checks if all the bits have been set
-	UNTIL 
-	DROP ;
-
+		READ_PIN SIZE LSHIFT
+		CURRENT_VALUE @ READ_INPUT + CURRENT_VALUE ! 
+		CLEAR_PIN
+		SIZE @ 1 + SIZE !
+		SIZE @ SIZE_REQUESTED =	
+	UNTIL ;
 
 
