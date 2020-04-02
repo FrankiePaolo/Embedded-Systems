@@ -33,6 +33,9 @@ VARIABLE SIZE
 	FALLING_EDGE_DETECT_SET_9
 	FALLING_EDGE_DETECT_SET_10 ;
 
+: CLEAR_PIN
+	600 GPEDS0 ! ; 
+
 : READ_PIN						( -- 0/1 )	
 	GPEDS0 @ 400 =					\ It leaves on the stack either 0 or 1
 	IF
@@ -42,18 +45,14 @@ VARIABLE SIZE
 	IF
 	1
 	ELSE
-	THEN THEN ; 
-
-: CLEAR_PIN
-	0 GPEDS0 ! ; 
+	THEN THEN CLEAR_PIN ; 
 
 : GET_INPUT						( -- )
 	0 CURRENT_VALUE !				\ Reads digits until a byte has been inputed 
 	0 SIZE !					\ Initializes loop
 	BEGIN
-		READ_PIN SIZE LSHIFT
+		READ_PIN SIZE @ LSHIFT
 		CURRENT_VALUE @ + CURRENT_VALUE ! 
-		CLEAR_PIN
 		SIZE @ 1 + SIZE !
 		SIZE @ SIZE_REQUESTED =	
 	UNTIL ;
