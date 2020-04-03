@@ -32,24 +32,46 @@ VARIABLE SIZE
 : FALLING_EDGE_DETECT_SET				( -- )
 	FALLING_EDGE_DETECT_SET_9
 	FALLING_EDGE_DETECT_SET_10 ;
+	
+: SETUP
+	SETUP_9
+	SETUP_10
+	SETUP_BSC
+	FALLING_EDGE_DETECT_SET 
+	0 CURRENT_VALUE !				
+	0 SIZE ! ;	
 
 : CLEAR_PIN
 	600 GPEDS0 ! ; 					\ We don't need to use a mask hence increase efficiency
 	
+: KEYS_MASK
+	GPEDS0 10 1 MASK_REGISTER GPEDS0 9 1 MASK_REGISTER OR ;	
+	
+: PEEK_KEYPRESS							
+	KEYS_MASK 
+	GPEDS0 @ AND 
+	DUP 0 <>
+	IF
+		1 MILLISECONDS DELAY		\ Makes sure the button has properly been
+		GPLEV0 @ INVERT AND 		\ released, else a keypress could be read twice 
+	THEN ;
+	
+	
 : IS_PRESSED
-	BEGIN
-	GPEDS0 @ BIT_FLAG
+	BEGIN						\ UPDATE : it should only check the approrpiate bits
+		PEEK_KEYPRESS
 	UNTIL ;
 
 : READ_PIN						( -- 0/1 )	
 	IS_PRESSED
-	GPEDS0 @ 400 =					\ I	t leaves on the stack either 0 or 1
+	GPEDS0 @ 400 =					\ It leaves on the stack either 0 or 1
 	IF
 	0 
-	THEN
+	ELSE
 	GPEDS0 @ 200 =
 	IF
 	1
+	THEN 
 	THEN ; 
 	
 : GET_INPUT						( -- )	
@@ -60,13 +82,40 @@ VARIABLE SIZE
 		CLEAR_PIN
 	SIZE_REQUESTED =
 	UNTIL ;
+	
+: LCD_HANDLE
+	CURRENT_VALUE @ SEND_CHAR ;
 
 
-: SETUP
-	SETUP_9
-	SETUP_10
-	SETUP_BSC
-	FALLING_EDGE_DETECT_SET 
-	0 CURRENT_VALUE !				
-	0 SIZE ! ;					
+: INPUT
+	BEGIN 
+		READ_PIN SIZE @ LSHIFT
+		CURRENT_VALUE @ + CURRENT_VALUE !
+		SIZE @ 1 + DUP SIZE !
+		CLEAR_PIN
+		SIZE_REQUESTED MOD 0 =
+		IF
+			LCD_HANDLE
+			0 CURRENT_VALUE !
+			0 SIZE ! 
+		THEN
+	AGAIN ;
+	
+: START
+	SETUP
+	LCD_INIT
+	INPUT ;
+	
+\ START
+
+
+
+
+
+
+
+
+
+
+				
 
