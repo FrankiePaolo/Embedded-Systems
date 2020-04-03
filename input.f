@@ -56,9 +56,9 @@ VARIABLE SIZE
 	BEGIN
 		READ_PIN SIZE @ LSHIFT			\ Reads digits until a byte has been inputed 
 		CURRENT_VALUE @ + CURRENT_VALUE ! 	
-		SIZE @ 1 + SIZE !
+		SIZE @ 1 + DUP SIZE !
 		CLEAR_PIN
-	SIZE @ SIZE_REQUESTED =
+	SIZE_REQUESTED =
 	UNTIL ;
 
 : INPUT

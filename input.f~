@@ -62,11 +62,9 @@ VARIABLE SIZE
 	UNTIL ;
 
 : INPUT
-	BEGIN
-		READ_PIN
-		CLEAR_PIN 
-		SIZE @ 1 + SIZE !
-	SIZE @ 8 =
+	BEGIN 
+		SIZE @ DUP U. 1 + DUP SIZE !
+	8 =
 	UNTIL ;
 
 
