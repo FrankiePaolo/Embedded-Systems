@@ -7,8 +7,8 @@
 	WRITE_FIFO 				\ We put data in the FIFO
 	SET_SLAVE				\ We set the slave address
 	WRITE_TRANSFER				\ We want to write
-	START_TRANSFER 				\ It starts the transfer
-	CHECK_STATUS ;				\ It checks that the transfer is done
+	START_TRANSFER  			\ It starts the transfer
+	CHECK_STATUS ; 				\ It checks that the transfer is done
 	
 : 4LSB						( -- )
 	F AND 4 LSHIFT ;			\ These are the 4 least significant bits
