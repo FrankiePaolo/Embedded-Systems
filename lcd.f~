@@ -7,8 +7,8 @@
 	WRITE_FIFO 				\ We put data in the FIFO
 	SET_SLAVE				\ We set the slave address
 	WRITE_TRANSFER				\ We want to write
-	START_TRANSFER 				\ It starts the transfer
-	CHECK_STATUS ;				\ It checks that the transfer is done
+	START_TRANSFER  			\ It starts the transfer
+	CHECK_STATUS ; 				\ It checks that the transfer is done
 	
 : 4LSB						( -- )
 	F AND 4 LSHIFT ;			\ These are the 4 least significant bits
@@ -43,16 +43,16 @@
 	28 SEND ;				\ D7-D6-D5-D4=0010 (LSB) BL=1 EN=0 RW=0 RS=0
 	
 : CLEAR_DISPLAY					( -- )
-	01 SEND_CMD ;				\ UPDATE with comments
+	01 SEND_CMD ;				\ It clears the display
 
 : DISPLAY_ON					( -- )
-	0F SEND_CMD ;				\ UPDATE with comments
+	0F SEND_CMD ;				\ It turns the display ON
 	
 : DISPLAY_SHIFT					( -- )
-	1F SEND_CMD ;				\ UPDATE with comments
+	1F SEND_CMD ;				\ It shifts the display
 	
 : LCD_INIT					( -- )
-	FUNCTION_SET				\ UPDATE with comments
+	FUNCTION_SET				\ It initializes the display
 	150 MICROSECONDS WAIT
 	DISPLAY_ON ;
 	

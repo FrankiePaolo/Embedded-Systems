@@ -122,7 +122,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	0 OR BSC1_BASE ! ;
 
 : SET_SLAVE					( -- ) 		
-	27 SLAVE ! ;				\ We set the slave address, 0x27 for our LCD
+	3F SLAVE ! ;				\ We set the slave address, 0x3F for our LCD
 
 : SET_DLEN					( bytes_num -- )
 	DLEN ! ;				\ It sets the bytes_num to be written 
@@ -130,14 +130,21 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 : WRITE_FIFO					( data -- ) 
 	FIFO ! ;				\ It puts data into the FIFO
 
-: DONE 						( -- flag )
-	STATUS 1 1 MASK_REGISTER 		\ If the transfer is compleate we get TRUE
-	2 AND BIT_FLAG ;
-
-: CHECK_STATUS 					( -- )
-	BEGIN					\ It checks that the transfer is done
-		150_DELAY	
-		DONE
+: DELAY 
+	BEGIN 1 - DUP 
+	0 = 
+	UNTIL 
+	DROP ;
+	
+: DONE 
+	STATUS @ 1 1 
+	LSHIFT AND 
+	BIT_FLAG ;
+	
+: CHECK_STATUS 
+	BEGIN 1000 
+	DELAY DONE 
 	UNTIL ;
+
 	
 
