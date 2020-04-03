@@ -131,8 +131,8 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	FIFO ! ;				\ It puts data into the FIFO
 
 : DONE 						( -- flag )
-	STATUS 1 1 MASK_REGISTER 		\ If the transfer is compleate we get TRUE
-	2 AND BIT_FLAG ;
+	STATUS @ 1 1 LSHIFT 			\ If the transfer is compleate we get TRUE
+	AND BIT_FLAG ;
 
 : CHECK_STATUS 					( -- )
 	BEGIN					\ It checks that the transfer is done

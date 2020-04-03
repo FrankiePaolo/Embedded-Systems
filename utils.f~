@@ -88,7 +88,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	9 GPFSEL_STARTING_BIT_POSITION 
 	3 MASK_REGISTER GPIO_BASE ! ;		
 	
-: SET_IN10					( -- )
+: SET_IN_10					( -- )
 	10 GPFSEL_ADDRESS 			\ We set GPIO 10 to INPUT
 	10 GPFSEL_STARTING_BIT_POSITION 
 	3 MASK_REGISTER GPIO_BASE ! ;		
@@ -131,8 +131,8 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	FIFO ! ;				\ It puts data into the FIFO
 
 : DONE 						( -- flag )
-	STATUS 1 1 MASK_REGISTER 		\ If the transfer is compleate we get TRUE
-	2 AND BIT_FLAG ;
+	STATUS @ 1 1 LSHIFT 		\ If the transfer is compleate we get TRUE
+	AND BIT_FLAG ;
 
 : CHECK_STATUS 					( -- )
 	BEGIN					\ It checks that the transfer is done
