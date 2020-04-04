@@ -1,4 +1,4 @@
-\ The following words are written for the I2C protocol and the expander specifications
+\ The following words are written for the I2C protocol and the display(QAPASS LCD 1602) and expander(PCF8574AT) specifications
 
 
 : SEND						( data -- ) 
@@ -17,30 +17,29 @@
 	F0 AND ;				\ These are the 4 most significant bits
 	
 : SEND_CMD					( cmd -- )
-	DUP 4MSB				\ UPDATE with comments
-	DUP C +	SEND				 
-	8 + SEND
+	DUP 4MSB				\ We operate in 4 bit mode so we have to send the 4MSB and 4LSB twice
+	DUP C +	SEND				\ D7-D6-D5-D4=MSB BL=1 EN=1 RW=0 RS=0 ( 0xC )
+	8 + SEND				\ D7-D6-D5-D4=MSB BL=1 EN=0 RW=0 RS=0 ( 0x8 )
 	DUP 4LSB
 	DUP C + SEND
 	8 + SEND
 	DROP ;
 	
-: SEND_CHAR					( char -- )
-	DUP 4MSB				\ UPDATE with comments
-	DUP D + SEND
-	9 + SEND
+: SEND_CHAR					( ASCII_code -- )
+	DUP 4MSB				\ We send the ASCII_code for the character
+	DUP D + SEND				\ D7-D6-D5-D4=MSB BL=1 EN=1 RW=0 RS=1 ( 0xD )
+	9 + SEND				\ D7-D6-D5-D4=MSB BL=1 EN=0 RW=0 RS=1 ( 0x9 )
 	DUP 4LSB
 	DUP D + SEND
 	9 + SEND 
 	DROP ;
 
-
-\ The following words are the display functions
-
+\ The display functions are specified in the QAPASS 1602 LCD datasheet
+\ Note: when we first turn the display on it is in 8 bit mode
 	
 : FUNCTION_SET					( -- )
 	2C SEND					\ D7-D6-D5-D4=0010 (MSB) BL=1 EN=1 RW=0 RS=0 Initialize Lcd in 4-bit mode
-	28 SEND ;				\ D7-D6-D5-D4=0010 (LSB) BL=1 EN=0 RW=0 RS=0
+	A8 SEND ;				\ D7-D6-D5-D4=1010 (LSB) BL=1 EN=0 RW=0 RS=0
 	
 : CLEAR_DISPLAY					( -- )
 	01 SEND_CMD ;				\ It clears the display
