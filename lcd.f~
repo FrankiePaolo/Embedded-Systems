@@ -48,12 +48,15 @@
 : DISPLAY_ON					( -- )
 	0F SEND_CMD ;				\ It turns the display ON
 	
-: DISPLAY_SHIFT					( -- )
-	1F SEND_CMD ;				\ It shifts the display
+: DISPLAY_LSHIFT				( -- )
+	1B SEND_CMD ;				\ It shifts the display to the left
+	
+: DISPLAY_RSHIFT				( -- )
+	1F SEND_CMD ;				\ It shifts the display to the right
 	
 : LCD_INIT					( -- )
 	FUNCTION_SET				\ It initializes the display
-	150 MICROSECONDS WAIT
+	100 DELAY
 	DISPLAY_ON ;
 	
 	
