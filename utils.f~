@@ -83,34 +83,33 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	GPFSEL_STARTING_BIT_POSITION		\ We then define more specific words for ease of use
 	3 MASK_REGISTER OR R> ! ;
 
+: SET_BSC1					( value starting_bit_position bits_num -- )
+	BSC1_BASE ROT ROT MASK_REGISTER 	\ We define a general word for any field of the BSC1_BASE register
+	OR BSC1_BASE ! ;			\ We then define more specific words for ease of use
+
 : SET_IN_9					( -- )
-	9 0 SET_GPFSEL ;			\ We set GPIO 9 to INPUT
+	0 9 SET_GPFSEL ;			\ We set GPIO 9 to INPUT
 	
 : SET_IN_10					( -- )
-	10 9 SET_GPFSEL ;			\ We set GPIO 10 to INPUT
+	0 10 SET_GPFSEL ;			\ We set GPIO 10 to INPUT
 	
 : SET_ALT0_2					( -- )
 	100 2 SET_GPFSEL ;			\ We set GPIO 2 to ALT0
 	
 : SET_ALT0_3					( -- )
-	800 3 SET_GPFSEL			\ We set GPIO 3 to ALT0
-
+	800 3 SET_GPFSEL ;			\ We set GPIO 3 to ALT0
 
 : CLEAR_FIFO					( -- )
-	BSC1_BASE 4 2 MASK_REGISTER 		\ It clears the FIFO
-	20 OR BSC1_BASE ! ;
+	20 4 2 SET_BSC1 ;			\ It clears the FIFO
 
 : SET_I2CEN					( -- )
-	BSC1_BASE F 1 MASK_REGISTER 		\ It enables the BSC controller
-	8000 OR BSC1_BASE ! ;
-	
+	8000 F 1 SET_BSC1 ;			\ It enables the BSC controller
+		
 : START_TRANSFER				( -- )
-	BSC1_BASE 7 1 MASK_REGISTER 		\ It starts a new transfer
-	80 OR BSC1_BASE ! ;
+	80 7 1 SET_BSC1	;			\ It starts a new transfer
 	
 : WRITE_TRANSFER				( -- )
-	BSC1_BASE 0 1 MASK_REGISTER		\ 0 = Write Packet
-	0 OR BSC1_BASE ! ;
+	0 0 1 SET_BSC1 ;			\ 0 = Write Packet
 
 : SET_SLAVE					( -- ) 		
 	3F SLAVE ! ;				\ Sets the slave address, 0x3F for our LCD
