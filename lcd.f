@@ -1,4 +1,4 @@
-\ The following words are written for the I2C protocol and the display(QAPASS LCD 1602) and expander(PCF8574AT) specifications
+\ The following words are written for the I2C protocol and the display (QAPASS LCD 1602) and expander(PCF8574AT) specifications
 
 
 : SEND						( data -- ) 

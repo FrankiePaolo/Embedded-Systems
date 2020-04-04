@@ -35,7 +35,7 @@
 	DROP ;
 
 \ The display functions are specified in the QAPASS 1602 LCD datasheet
-\ Note: When we first turn the display on it is in 8 bit mode
+\ Note: when we first turn the display on it is in 8 bit mode
 	
 : FUNCTION_SET					( -- )
 	2C SEND					\ D7-D6-D5-D4=0010 (MSB) BL=1 EN=1 RW=0 RS=0 Initialize Lcd in 4-bit mode

@@ -98,25 +98,25 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	GPFEN0 SET_REGISTER ; 			\ We define a general word for any field of the GPFEN0 register
 
 : SET_IN_9					( -- )
-	0 9 SET_GPFSEL ;			\ We set GPIO 9 to INPUT
+	0 9 SET_GPFSEL ;			\ Sets GPIO 9 to INPUT
 	
 : SET_IN_10					( -- )
-	0 10 SET_GPFSEL ;			\ We set GPIO 10 to INPUT
+	0 10 SET_GPFSEL ;			\ Sets GPIO 10 to INPUT
 	
 : SET_ALT0_2					( -- )
-	100 2 SET_GPFSEL ;			\ We set GPIO 2 to ALT0
+	100 2 SET_GPFSEL ;			\ Sets GPIO 2 to ALT0
 	
 : SET_ALT0_3					( -- )
-	800 3 SET_GPFSEL ;			\ We set GPIO 3 to ALT0
+	800 3 SET_GPFSEL ;			\ Sets GPIO 3 to ALT0
 
 : CLEAR_FIFO					( -- )
-	20 4 2 SET_BSC1 ;			\ It clears the FIFO
+	20 4 2 SET_BSC1 ;			\ Clears the FIFO
 
 : SET_I2CEN					( -- )
-	8000 F 1 SET_BSC1 ;			\ It enables the BSC controller
+	8000 F 1 SET_BSC1 ;			\ Enables the BSC controller
 		
 : START_TRANSFER				( -- )
-	80 7 1 SET_BSC1	;			\ It starts a new transfer
+	80 7 1 SET_BSC1	;			\ Starts a new transfer
 	
 : WRITE_TRANSFER				( -- )
 	0 0 1 SET_BSC1 ;			\ 0 = Writes Packet
@@ -125,10 +125,10 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	3F SLAVE ! ;				\ Sets the slave address, 0x3F for our LCD
 
 : SET_DLEN					( bytes_num -- )
-	DLEN ! ;				\ It sets the bytes_num to be written 
+	DLEN ! ;				\ Sets the bytes_num to be written 
 	
 : WRITE_FIFO					( data -- ) 
-	FIFO ! ;				\ It puts data into the FIFO
+	FIFO ! ;				\ Puts data into the FIFO
 		
 : DONE 						( -- )
 	STATUS @ 				\ Checks that DONE bit in STATUS register is set
@@ -147,11 +147,11 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 : FALLING_EDGE_DETECT_SET_10			( -- )
 	400 10 1 SET_GPFEN0 ;			\ A falling edge transition in GPIO 10 sets a bit in the event detect status registers
 	
-: SETUP_9 					( -- )		
+: SETUP_GPIO_9 					( -- )		
 	SET_IN_9				\ Sets GPIO 9 as input 
 	DOWN 9 SET_PULL ; 			\ Sets the internal pull DOWN
 
-: SETUP_10					( -- )
+: SETUP_GPIO_10					( -- )
 	SET_IN_10				\ Sets GPIO 10 as input 
 	DOWN 10 SET_PULL ;			\ Sets the internal pull DOWN
 	 
@@ -160,8 +160,8 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	SET_ALT0_3				\ SDA for data and SCL for the clock
 	SET_I2CEN ;				\ We enable the BSC controller
 	
-: FALLING_EDGE_DETECT_SET				( -- )
-	FALLING_EDGE_DETECT_SET_9
+: FALLING_EDGE_DETECT_SET			( -- )
+	FALLING_EDGE_DETECT_SET_9		\ A falling edge transition in GPIO 9 and GPIO 10 sets a bit in the event detect status registers 
 	FALLING_EDGE_DETECT_SET_10 ;
 	
 	
