@@ -69,7 +69,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 : GPFSEL_STARTING_BIT_POSITION			( pin_number -- starting_bit_position )
 	A MOD 3 * ;				\ starting_bit_position for the FSEL field in the appropriate GPFSEL register
 
-: SET_PUD					( GPPUDCLK0_MASK, UP/DOWN -- )
+: SET_PUD					( GPPUDCLK0_MASK UP/DOWN -- )
 	GPPUD !
 	150 DELAY
 	DUP INVERT SWAP
@@ -77,6 +77,10 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	150 DELAY
 	0 GPPUD !
 	GPPUDCLK0 @ AND GPPUDCLK0 ! ;
+
+: SET_PULL					( UP/DOWN pin_number -- )
+	GPPUDCLK0 SWAP 1 MASK_REGISTER		\ We define a general word that works with any pin_number  
+	SWAP SET_PUD ;
 
 : SET_GPFSEL					( value pin_number -- )
 	DUP GPFSEL_ADDRESS DUP >R SWAP		\ We define a general word that only requires the pin_number and value to set in the appropriate register
@@ -141,25 +145,23 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	200 9 1 SET_GPFEN0 ;			\ A falling edge transition in GPIO 9 sets a bit in the event detect status registers
 	
 : FALLING_EDGE_DETECT_SET_10			( -- )
-	400 10 1 SET_GPFEN0 ;			\ A falling edge transition in GPIO 9 sets a bit in the event detect status registers
-
-: SETUP_9 						( -- )		
-	SET_IN_9					\ We set the GPIOs as input and then we set the internal pull DOWN
-	GPPUDCLK0 9 1 MASK_REGISTER			\ This is for GPIO 9 
-	DOWN SET_PUD ;
-
-: SETUP_10						( -- )
-	SET_IN_10					\ We set the GPIOs as input and then we set the internal pull DOWN
-	GPPUDCLK0 10 1 MASK_REGISTER			\ This is for GPIO 10
-	DOWN SET_PUD ;
-
-: SETUP_BSC						( -- )
-	SET_ALT0_2					\ BSC1 is on GPIO pins 2(SDA) and 3(SCL) , so we set them to ALT0
-	SET_ALT0_3
-	SET_I2CEN ;					\ We enable the BSC controller
+	400 10 1 SET_GPFEN0 ;			\ A falling edge transition in GPIO 10 sets a bit in the event detect status registers
 	
-: FALLING_EDGE_DETECT_SET				( -- )
-	FALLING_EDGE_DETECT_SET_9
+: SETUP_9 					( -- )		
+	SET_IN_9				\ Sets GPIO 9 as input 
+	DOWN 9 SET_PULL ; 			\ Sets the internal pull DOWN
+
+: SETUP_10					( -- )
+	SET_IN_10				\ Sets GPIO 10 as input 
+	DOWN 10 SET_PULL ;			\ Sets the internal pull DOWN
+	 
+: SETUP_BSC					( -- )
+	SET_ALT0_2				\ BSC1 is on GPIO pins 2(SDA) and 3(SCL) , therefore we set them to ALT0
+	SET_ALT0_3				\ SDA for data and SCL for the clock
+	SET_I2CEN ;				\ We enable the BSC controller
+	
+: FALLING_EDGE_DETECT_SET			( -- )
+	FALLING_EDGE_DETECT_SET_9		\ A falling edge transition in GPIO 9 and GPIO 10 sets a bit in the event detect status registers 
 	FALLING_EDGE_DETECT_SET_10 ;
 	
 	
