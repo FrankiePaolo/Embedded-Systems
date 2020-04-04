@@ -98,10 +98,10 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	GPFEN0 SET_REGISTER ; 			\ We define a general word for any field of the GPFEN0 register
 
 : SET_IN_9					( -- )
-	0 9 SET_GPFSEL ;			\ Sets GPIO 9 to INPUT
+	INPUT 9 SET_GPFSEL ;			\ Sets GPIO 9 to INPUT
 	
 : SET_IN_10					( -- )
-	0 10 SET_GPFSEL ;			\ Sets GPIO 10 to INPUT
+	INPUT 10 SET_GPFSEL ;			\ Sets GPIO 10 to INPUT
 	
 : SET_ALT0_2					( -- )
 	100 2 SET_GPFSEL ;			\ Sets GPIO 2 to ALT0
@@ -130,10 +130,10 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 : WRITE_FIFO					( data -- ) 
 	FIFO ! ;				\ Puts data into the FIFO
 		
-: DONE 						( -- )
-	STATUS @ 				\ Checks that DONE bit in STATUS register is set
-	1 1 LSHIFT 
-	AND BIT_FLAG ;
+: DONE 						( -- flag )
+	STATUS @ 				\ Checks that DONE bit in STATUS register is set and returns flag
+	2 AND 
+	BIT_FLAG ;
 	
 : CHECK_STATUS 					( -- )
 	BEGIN 					\ Waits until DONE bit in STATUS register is set
@@ -164,7 +164,5 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	FALLING_EDGE_DETECT_SET_9		\ A falling edge transition in GPIO 9 and GPIO 10 sets a bit in the event detect status registers 
 	FALLING_EDGE_DETECT_SET_10 ;
 	
-	
 
-	
 

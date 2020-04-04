@@ -1,69 +1,70 @@
 VARIABLE 							 CURRENT_VALUE
 VARIABLE 							 SIZE 
-8 							CONSTANT SIZE_REQUESTED
+8 							CONSTANT SIZE_REQUESTED 			\ Size of display command ( in our instance it's a byte )		
+
+
 
 : SETUP						( -- )		
-	SETUP_GPIO_9
+	SETUP_GPIO_9				
 	SETUP_GPIO_10
 	SETUP_BSC
 	FALLING_EDGE_DETECT_SET 
 	0 CURRENT_VALUE !				
 	0 SIZE ! ;	
 	
-
-: CLEAR_PIN
-	600 GPEDS0 ! ; 					\ We don't need to use a mask hence increase efficiency
+: STATUS_MASK					( -- masked_register )
+	GPEDS0 10 1 MASK_REGISTER 		\ Provides a mask of GPEDS0 for GPIO 9 and 10
+	GPEDS0 9 1 MASK_REGISTER 
+	OR ;	
 	
-: KEYS_MASK
-	GPEDS0 10 1 MASK_REGISTER GPEDS0 9 1 MASK_REGISTER OR ;	
+: CLEAR_STATUS					( -- )
+	STATUS_MASK 				\ Clears the STATUS register for the appropriate GPIO pins
+	600 OR 
+	GPEDS0 ! ; 					
 	
-: PEEK_KEYPRESS							
-	KEYS_MASK 
-	GPEDS0 @ AND 
-	DUP 0 <>
-	IF
-		1 MILLISECONDS DELAY		\ Makes sure the button has properly been
-		GPLEV0 @ INVERT AND 		\ released, else a keypress could be read twice 
-	THEN ;
-	
-	
-: IS_PRESSED
-	BEGIN						\ UPDATE : it should only check the approrpiate bits
-		PEEK_KEYPRESS
+: IS_PRESSED					( -- )
+	BEGIN					\ Waits until the button has been released	
+		STATUS_MASK 
+		GPEDS0 @ AND 
+		DUP 0 <>
+		IF
+			1 MILLISECONDS DELAY	\ Makes sure the button has properly been released, avoiding double reads
+			GPLEV0 @ INVERT AND 	
+		THEN 
 	UNTIL ;
 
-: READ_PIN						( -- 0/1 )	
+: BUTTONS					( -- 0/1 )	
 	IS_PRESSED
-	GPEDS0 @ 400 =					\ It leaves on the stack either 0 or 1
+	GPEDS0 @ 400 AND BIT_FLAG		\ Leaves on the stack either 0 or 1
 	IF
-	0 
+		0 
 	ELSE
-	GPEDS0 @ 200 =
+	GPEDS0 @ 200 AND BIT_FLAG
 	IF
-	1
+		1
 	THEN 
 	THEN ; 
 	
-: LCD_HANDLE
-	CURRENT_VALUE @ 10 =
+: LCD_HANDLE					( -- )
+	CURRENT_VALUE @ 10 =			\ Handles display behavior 
 	IF
-	CLEAR_DISPLAY
+		CLEAR_DISPLAY
 	ELSE
 	CURRENT_VALUE @ 11 =
 	IF
-	DISPLAY_LSHIFT
+		DISPLAY_LSHIFT
 	ELSE
 	CURRENT_VALUE @ 12 =
 	IF
-	DISPLAY_RSHIFT
+		DISPLAY_RSHIFT
 	ELSE
-	CURRENT_VALUE @ SEND_CHAR
+		CURRENT_VALUE @ SEND_CHAR
 	THEN
 	THEN
 	THEN ;
 	
-: WELCOME
-	57 SEND_CHAR
+: WELCOME					( -- )
+	57 SEND_CHAR				\ Displays word WELCOME
 	45 SEND_CHAR
 	4C SEND_CHAR
 	43 SEND_CHAR
@@ -74,24 +75,22 @@ VARIABLE 							 SIZE
 	3D0900 WAIT
 	CLEAR_DISPLAY ;
 	
-	
-	
-: INPUT
-	BEGIN 
-		READ_PIN SIZE @ LSHIFT
-		CURRENT_VALUE @ + CURRENT_VALUE !
-		SIZE @ 1 + DUP SIZE !
-		CLEAR_PIN
-		SIZE_REQUESTED MOD 0 =
+: INPUT						( -- )
+	BEGIN 					
+		BUTTONS SIZE @ LSHIFT			\ Left shifts the value on the stack by size places 
+		CURRENT_VALUE @ + CURRENT_VALUE ! 	\ Adds the shifted value to the CURRENT_VALUE
+		SIZE @ 1 + DUP SIZE !			\ Adds 1 to SIZE
+		CLEAR_STATUS				\ Clears the STATUS register
+		SIZE_REQUESTED MOD 0 =			\ If size is a multiple of 8 (so we put 8 bits on the stack)
 		IF
-			LCD_HANDLE
-			0 CURRENT_VALUE !
-			0 SIZE ! 
+			LCD_HANDLE			\ Call the LCD handler
+			0 CURRENT_VALUE !		\ Resets the current value
+			0 SIZE ! 			\ Resets the size
 		THEN
 	AGAIN ;
 	
-: START
-	SETUP
+: START						( -- )
+	SETUP					\ Starts the whole program
 	LCD_INIT
 	WELCOME
 	INPUT ;
@@ -99,13 +98,4 @@ VARIABLE 							 SIZE
 \ START
 
 
-
-
-
-
-
-
-
-
-				
 
