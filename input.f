@@ -2,6 +2,14 @@ VARIABLE CURRENT_VALUE
 VARIABLE SIZE 
 8 CONSTANT SIZE_REQUESTED
 
+: SETUP
+	SETUP_9
+	SETUP_10
+	SETUP_BSC
+	FALLING_EDGE_DETECT_SET 
+	0 CURRENT_VALUE !				
+	0 SIZE ! ;	
+	
 
 : CLEAR_PIN
 	600 GPEDS0 ! ; 					\ We don't need to use a mask hence increase efficiency

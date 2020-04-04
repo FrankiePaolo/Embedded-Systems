@@ -83,9 +83,15 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	GPFSEL_STARTING_BIT_POSITION		\ We then define more specific words for ease of use
 	3 MASK_REGISTER OR R> ! ;
 
+: SET_REGISTER					( value starting_bit_position bits_num address -- )
+	DUP >R ROT ROT MASK_REGISTER 		\ We define a general word for any field of any register
+	OR R> ! ;				\ We then define more specific words for ease of use
+
 : SET_BSC1					( value starting_bit_position bits_num -- )
-	BSC1_BASE ROT ROT MASK_REGISTER 	\ We define a general word for any field of the BSC1_BASE register
-	OR BSC1_BASE ! ;			\ We then define more specific words for ease of use
+	BSC1_BASE SET_REGISTER ; 		\ We define a general word for any field of the BSC1_BASE register
+	
+: SET_GPFEN0					( value starting_bit_position bits_num -- )
+	GPFEN0 SET_REGISTER ; 			\ We define a general word for any field of the GPFEN0 register
 
 : SET_IN_9					( -- )
 	0 9 SET_GPFSEL ;			\ We set GPIO 9 to INPUT
@@ -109,7 +115,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	80 7 1 SET_BSC1	;			\ It starts a new transfer
 	
 : WRITE_TRANSFER				( -- )
-	0 0 1 SET_BSC1 ;			\ 0 = Write Packet
+	0 0 1 SET_BSC1 ;			\ 0 = Writes Packet
 
 : SET_SLAVE					( -- ) 		
 	3F SLAVE ! ;				\ Sets the slave address, 0x3F for our LCD
@@ -131,15 +137,11 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	DONE 
 	UNTIL ;
 	
-: FALLING_EDGE_DETECT_SET_9				( -- )
-	GPFEN0 
-	9 1 MASK_REGISTER 
-	200 OR GPFEN0 ! ;
+: FALLING_EDGE_DETECT_SET_9			( -- )
+	200 9 1 SET_GPFEN0 ;			\ A falling edge transition in GPIO 9 sets a bit in the event detect status registers
 	
-: FALLING_EDGE_DETECT_SET_10				( -- )
-	GPFEN0 
-	10 1 MASK_REGISTER 
-	400 OR GPFEN0 ! ;
+: FALLING_EDGE_DETECT_SET_10			( -- )
+	400 10 1 SET_GPFEN0 ;			\ A falling edge transition in GPIO 9 sets a bit in the event detect status registers
 
 : SETUP_9 						( -- )		
 	SET_IN_9					\ We set the GPIOs as input and then we set the internal pull DOWN
