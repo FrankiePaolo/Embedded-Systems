@@ -46,7 +46,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	BEGIN
 		DUP CURRENT_TIME		\ Now on the stack: microseconds start_time start_time current_time 	
 		- ABS  				\ Now on the stack: microseconds start_time elapsed_time 
-		>R OVER R>    <=		
+	>R OVER R>    <=		
 	UNTIL
 	DROP DROP ;
 
@@ -78,31 +78,23 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	0 GPPUD !
 	GPPUDCLK0 @ AND GPPUDCLK0 ! ;
 
+: SET_GPFSEL					( value pin_number -- )
+	DUP GPFSEL_ADDRESS DUP >R SWAP		\ We define a general word that only requires the pin_number and value to set in the appropriate register
+	GPFSEL_STARTING_BIT_POSITION		\ We then define more specific words for ease of use
+	3 MASK_REGISTER OR R> ! ;
 
-\ The following words are used only for debugging
-\ To be updated with higher levels of abstraction
-
-: SET_IN_9 					( -- )
-	9 GPFSEL_ADDRESS 			\ We set GPIO 9 to INPUT
-	9 GPFSEL_STARTING_BIT_POSITION 
-	3 MASK_REGISTER GPIO_BASE ! ;		
+: SET_IN_9					( -- )
+	9 0 SET_GPFSEL ;			\ We set GPIO 9 to INPUT
 	
 : SET_IN_10					( -- )
-	10 GPFSEL_ADDRESS 			\ We set GPIO 10 to INPUT
-	10 GPFSEL_STARTING_BIT_POSITION 
-	3 MASK_REGISTER GPIO_BASE ! ;		
-
+	10 9 SET_GPFSEL ;			\ We set GPIO 10 to INPUT
+	
 : SET_ALT0_2					( -- )
-	GPIO_BASE 				\ We set GPIO 2 to ALT0
-	2 GPFSEL_STARTING_BIT_POSITION 
-	3 MASK_REGISTER 				
-	100 OR GPIO_BASE ! ;
+	100 2 SET_GPFSEL ;			\ We set GPIO 2 to ALT0
 	
 : SET_ALT0_3					( -- )
-	GPIO_BASE 				\ We set GPIO 3 to ALT0
-	3 GPFSEL_STARTING_BIT_POSITION 		
-	3 MASK_REGISTER 				
-	800 OR GPIO_BASE ! ;				
+	800 3 SET_GPFSEL			\ We set GPIO 3 to ALT0
+
 
 : CLEAR_FIFO					( -- )
 	BSC1_BASE 4 2 MASK_REGISTER 		\ It clears the FIFO
@@ -128,17 +120,56 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	
 : WRITE_FIFO					( data -- ) 
 	FIFO ! ;				\ It puts data into the FIFO
-	
+		
 : DONE 						( -- )
-	STATUS @ 1 1 				\ Checks that DONE bit in STATUS register is set
-	LSHIFT AND 
-	BIT_FLAG ;
+	STATUS @ 				\ Checks that DONE bit in STATUS register is set
+	1 1 LSHIFT 
+	AND BIT_FLAG ;
 	
 : CHECK_STATUS 					( -- )
 	BEGIN 					\ Waits until DONE bit in STATUS register is set
 		1000 DELAY 
 	DONE 
 	UNTIL ;
+	
+: FALLING_EDGE_DETECT_SET_9				( -- )
+	GPFEN0 
+	9 1 MASK_REGISTER 
+	200 OR GPFEN0 ! ;
+	
+: FALLING_EDGE_DETECT_SET_10				( -- )
+	GPFEN0 
+	10 1 MASK_REGISTER 
+	400 OR GPFEN0 ! ;
+
+: SETUP_9 						( -- )		
+	SET_IN_9					\ We set the GPIOs as input and then we set the internal pull DOWN
+	GPPUDCLK0 9 1 MASK_REGISTER			\ This is for GPIO 9 
+	DOWN SET_PUD ;
+
+: SETUP_10						( -- )
+	SET_IN_10					\ We set the GPIOs as input and then we set the internal pull DOWN
+	GPPUDCLK0 10 1 MASK_REGISTER			\ This is for GPIO 10
+	DOWN SET_PUD ;
+
+: SETUP_BSC						( -- )
+	SET_ALT0_2					\ BSC1 is on GPIO pins 2(SDA) and 3(SCL) , so we set them to ALT0
+	SET_ALT0_3
+	SET_I2CEN ;					\ We enable the BSC controller
+	
+: FALLING_EDGE_DETECT_SET				( -- )
+	FALLING_EDGE_DETECT_SET_9
+	FALLING_EDGE_DETECT_SET_10 ;
+	
+: SETUP
+	SETUP_9
+	SETUP_10
+	SETUP_BSC
+	FALLING_EDGE_DETECT_SET 
+	0 CURRENT_VALUE !				
+	0 SIZE ! ;	
+	
+	
 
 	
 
