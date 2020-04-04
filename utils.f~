@@ -50,12 +50,11 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	UNTIL
 	DROP DROP ;
 
-: 150_DELAY
-	0
-	BEGIN
-	   	1 + DUP
-	   	150 >=
-	UNTIL
+: DELAY 					( steps -- )
+	BEGIN 					\ We wait until steps = 0
+		1 - DUP 
+	0 = 
+	UNTIL 
 	DROP ;
 		
 : MASK_REGISTER 				( address starting_bit_position bits_num -- masked_register )
@@ -72,10 +71,10 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 
 : SET_PUD					( GPPUDCLK0_MASK, UP/DOWN -- )
 	GPPUD !
-	150_DELAY
+	150 DELAY
 	DUP INVERT SWAP
 	GPPUDCLK0 @ OR GPPUDCLK0 !
-	150_DELAY
+	150 DELAY
 	0 GPPUD !
 	GPPUDCLK0 @ AND GPPUDCLK0 ! ;
 
@@ -122,28 +121,23 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	0 OR BSC1_BASE ! ;
 
 : SET_SLAVE					( -- ) 		
-	27 SLAVE ! ;				\ We set the slave address, 0x27 for our LCD
+	3F SLAVE ! ;				\ Sets the slave address, 0x3F for our LCD
 
 : SET_DLEN					( bytes_num -- )
 	DLEN ! ;				\ It sets the bytes_num to be written 
 	
 : WRITE_FIFO					( data -- ) 
 	FIFO ! ;				\ It puts data into the FIFO
-
-: DELAY 
-	BEGIN 1 - DUP 
-	0 = 
-	UNTIL 
-	DROP ;
 	
-: DONE 
-	STATUS @ 1 1 
+: DONE 						( -- )
+	STATUS @ 1 1 				\ Checks that DONE bit in STATUS register is set
 	LSHIFT AND 
 	BIT_FLAG ;
 	
-: CHECK_STATUS 
-	BEGIN 1000 
-	DELAY DONE 
+: CHECK_STATUS 					( -- )
+	BEGIN 					\ Waits until DONE bit in STATUS register is set
+		1000 DELAY 
+	DONE 
 	UNTIL ;
 
 	
