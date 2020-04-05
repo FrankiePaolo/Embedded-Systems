@@ -47,7 +47,7 @@ VARIABLE 							 SIZE
 	
 : LCD_HANDLE					( -- )
 	CURRENT_VALUE @ 10 =			\ Handles display behavior 
-	IF
+	IF					\ ASCII Values less than 32 are control characters so we use them for the display functions
 		CLEAR_DISPLAY
 	ELSE
 	CURRENT_VALUE @ 11 =
@@ -58,8 +58,18 @@ VARIABLE 							 SIZE
 	IF
 		DISPLAY_RSHIFT
 	ELSE
+	CURRENT_VALUE @ 13 =
+	IF
+		FIRST_LINE
+	ELSE
+	CURRENT_VALUE @ 14 =
+	IF
+		SECOND_LINE
+	ELSE
 		CURRENT_VALUE @ SEND_CHAR
 	THEN
+	THEN
+	THEN 
 	THEN
 	THEN ;
 	
@@ -72,7 +82,13 @@ VARIABLE 							 SIZE
 	4D SEND_CHAR
 	45 SEND_CHAR 
 	21 SEND_CHAR
-	3D0900 WAIT
+	SECOND_LINE
+	DISPLAY_RSHIFT
+	76 SEND_CHAR
+	30 SEND_CHAR
+	2E SEND_CHAR
+	31 SEND_CHAR
+	1D0900 WAIT
 	CLEAR_DISPLAY ;
 	
 : INPUT						( -- )

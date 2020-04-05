@@ -38,9 +38,9 @@
 \ Note: when we first turn the display on it is in 8 bit mode
 	
 : FUNCTION_SET					( -- )
-	2C SEND					\ D7-D6-D5-D4=0010 (MSB) BL=1 EN=1 RW=0 RS=0 Initialize Lcd in 4-bit mode
-	A8 SEND ;				\ D7-D6-D5-D4=1010 (LSB) BL=1 EN=0 RW=0 RS=0
-	
+	2C SEND					\ D7-D6-D5-D4=0010 (MSB) BL=1 EN=1 RW=0 RS=0 Initialize Lcd in 4-bit mode 2C SEND
+	88 SEND ;				\ D3-D2-D1-D0=1010 (LSB) BL=1 EN=0 RW=0 RS=0
+
 : CLEAR_DISPLAY					( -- )
 	01 SEND_CMD ;				\ It clears the display
 
@@ -52,10 +52,17 @@
 	
 : DISPLAY_RSHIFT				( -- )
 	17 SEND_CMD ;				\ It shifts the display to the right
+
+: FIRST_LINE					( -- )
+	80 SEND_CMD ;				\ It changes the display line to first without easing RAM data
+
+: SECOND_LINE					( -- )
+	C0 SEND_CMD ;				\ It changes the display line to second
 	
 : LCD_INIT					( -- )
 	FUNCTION_SET				\ It initializes the display
 	100 DELAY
 	DISPLAY_ON ;
+	
 	
 	

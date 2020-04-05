@@ -47,7 +47,7 @@ VARIABLE 							 SIZE
 	
 : LCD_HANDLE					( -- )
 	CURRENT_VALUE @ 10 =			\ Handles display behavior 
-	IF
+	IF					\ Unused ASCII character values are chosen for display functions
 		CLEAR_DISPLAY
 	ELSE
 	CURRENT_VALUE @ 11 =
@@ -58,8 +58,18 @@ VARIABLE 							 SIZE
 	IF
 		DISPLAY_RSHIFT
 	ELSE
+	CURRENT_VALUE @ 13 =
+	IF
+		FIRST_LINE
+	ELSE
+	CURRENT_VALUE @ 14 =
+	IF
+		SECOND_LINE
+	ELSE
 		CURRENT_VALUE @ SEND_CHAR
 	THEN
+	THEN
+	THEN 
 	THEN
 	THEN ;
 	
@@ -72,20 +82,26 @@ VARIABLE 							 SIZE
 	4D SEND_CHAR
 	45 SEND_CHAR 
 	21 SEND_CHAR
-	3D0900 WAIT
+	SECOND_LINE
+	DISPLAY_RSHIFT
+	76 SEND_CHAR
+	30 SEND_CHAR
+	2E SEND_CHAR
+	31 SEND_CHAR
+	1D0900 WAIT
 	CLEAR_DISPLAY ;
 	
 : INPUT						( -- )
 	BEGIN 					
-		BUTTONS SIZE @ LSHIFT
-		CURRENT_VALUE @ + CURRENT_VALUE !
-		SIZE @ 1 + DUP SIZE !
-		CLEAR_STATUS
-		SIZE_REQUESTED MOD 0 =
+		BUTTONS SIZE @ LSHIFT			\ Left shifts the value on the stack by size places 
+		CURRENT_VALUE @ + CURRENT_VALUE ! 	\ Adds the shifted value to the CURRENT_VALUE
+		SIZE @ 1 + DUP SIZE !			\ Adds 1 to SIZE
+		CLEAR_STATUS				\ Clears the STATUS register
+		SIZE_REQUESTED MOD 0 =			\ If size is a multiple of 8 (so we put 8 bits on the stack)
 		IF
-			LCD_HANDLE
-			0 CURRENT_VALUE !
-			0 SIZE ! 
+			LCD_HANDLE			\ Call the LCD handler
+			0 CURRENT_VALUE !		\ Resets the current value
+			0 SIZE ! 			\ Resets the size
 		THEN
 	AGAIN ;
 	
