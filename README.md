@@ -1,1 +1,1 @@
-Project for Embedded Systems course at the Università di Palermo 2019-2020
+Project for the Embedded Systems course at the University of Palermo ( Italy ) 2019-2020
