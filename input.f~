@@ -47,7 +47,7 @@ VARIABLE 							 SIZE
 	
 : LCD_HANDLE					( -- )
 	CURRENT_VALUE @ 10 =			\ Handles display behavior 
-	IF					\ Unused ASCII character values are chosen for display functions
+	IF					\ ASCII Values less than 32 are control characters so we use them for the display functions
 		CLEAR_DISPLAY
 	ELSE
 	CURRENT_VALUE @ 11 =
