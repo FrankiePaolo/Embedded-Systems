@@ -10,10 +10,10 @@
 	START_TRANSFER  			\ It starts the transfer
 	CHECK_STATUS ; 				\ It checks that the transfer is done
 	
-: 4LSB						( -- )
+: 4LSB						( cmd -- 4lsb )
 	F AND 4 LSHIFT ;			\ These are the 4 least significant bits
 	
-: 4MSB						( -- )
+: 4MSB						( cmd -- 4msb )
 	F0 AND ;				\ These are the 4 most significant bits
 	
 : SEND_CMD					( cmd -- )

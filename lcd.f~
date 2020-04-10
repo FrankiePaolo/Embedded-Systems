@@ -57,7 +57,7 @@
 	80 SEND_CMD ;				\ It changes the display line to first without easing RAM data
 
 : SECOND_LINE					( -- )
-	C0 SEND_CMD ;				\ It changes the display line to second
+	C0 SEND_CMD ;				\ It changes the display line to second without easing RAM data
 	
 : LCD_INIT					( -- )
 	FUNCTION_SET				\ It initializes the display

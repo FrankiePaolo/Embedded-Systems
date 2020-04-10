@@ -35,34 +35,37 @@ VARIABLE 							 SIZE
 
 : BUTTONS					( -- 0/1 )	
 	IS_PRESSED
-	GPEDS0 @ 400 AND BIT_FLAG		\ Leaves on the stack either 0 or 1
+	GPEDS0 @ 				\ Leaves on the stack either 0 or 1
+	DUP 400 AND BIT_FLAG		
 	IF
 		0 
 	ELSE
-	GPEDS0 @ 200 AND BIT_FLAG
+	DUP 200 AND BIT_FLAG
 	IF
 		1
 	THEN 
-	THEN ; 
+	THEN
+	DROP ; 
 	
 : LCD_HANDLE					( -- )
-	CURRENT_VALUE @ 10 =			\ Handles display behavior 
-	IF					\ ASCII Values less than 32 are control characters so we use them for the display functions
+	CURRENT_VALUE @ 			\ Handles display behavior
+	DUP 10 =			 	\ ASCII Values less than 32 are control characters so we use them for the display functions
+	IF					
 		CLEAR_DISPLAY
 	ELSE
-	CURRENT_VALUE @ 11 =
+	DUP 11 =
 	IF
 		DISPLAY_LSHIFT
 	ELSE
-	CURRENT_VALUE @ 12 =
+	DUP 12 =
 	IF
 		DISPLAY_RSHIFT
 	ELSE
-	CURRENT_VALUE @ 13 =
+	DUP 13 =
 	IF
 		FIRST_LINE
 	ELSE
-	CURRENT_VALUE @ 14 =
+	DUP 14 =
 	IF
 		SECOND_LINE
 	ELSE
@@ -71,7 +74,8 @@ VARIABLE 							 SIZE
 	THEN
 	THEN 
 	THEN
-	THEN ;
+	THEN 
+	DROP ;
 	
 : WELCOME					( -- )
 	57 SEND_CHAR				\ Displays word WELCOME
