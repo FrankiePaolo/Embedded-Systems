@@ -89,47 +89,47 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	LINE_COUNTER @
 	DUP 1 = 
 	IF
+		DROP
 		LAST_SECOND_LINE		\ Sets the cursor position and LINE_COUNTER to last position of the second line
 	ELSE
-	DUP 11 =
+	11 =
 	IF
 		LAST_FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to last position of the first line
 	ELSE
 		LSHIFT_CMD			\ Shifts the display to the left and decreases the LINE_COUNTER value
 	THEN
-	THEN
-	DROP ;
+	THEN ;
 
 : DISPLAY_RSHIFT				( -- )
 	LINE_COUNTER @
 	DUP 10 =
 	IF
+		DROP
 		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
-	DUP 20 =
+	20 =
 	IF
 		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
 	ELSE
 		RSHIFT_CMD			\ It shifts the display to the right
 	THEN
-	THEN
-	DROP ;
+	THEN ;
 
 : DISPLAY_CHAR					( ASCII_code -- )
 	SEND_CHAR
 	LINE_COUNTER @
 	DUP 10 =
 	IF
+		DROP
 		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
-	DUP 20 =
+	20 =
 	IF
 		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
 	ELSE
 		LINE_COUNTER++
 	THEN
-	THEN 
-	DROP ;
+	THEN ;
 
 	
 	

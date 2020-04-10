@@ -42,7 +42,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	SYSTIMER_CL0 @ ;
 	
 : WAIT 						( microseconds -- )
-	CURRENT_TIME
+	CURRENT_TIME				
 	BEGIN
 		DUP CURRENT_TIME		\ Now on the stack: microseconds start_time start_time current_time 	
 		- ABS  				\ Now on the stack: microseconds start_time elapsed_time 
