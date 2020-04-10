@@ -67,7 +67,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	GPIO_BASE  + ;				\ the address of the appropriate GPFSEL function select register 
 
 : GPFSEL_STARTING_BIT_POSITION			( pin_number -- starting_bit_position )
-	A MOD 3 * ;				\ starting_bit_position for the FSEL field in the appropriate GPFSEL register
+	A MOD 3 * ;				\ starting_bit_position for the appropriate FSEL field in the appropriate GPFSEL register
 
 : SET_PUD					( GPPUDCLK0_MASK UP/DOWN -- )
 	GPPUD !
