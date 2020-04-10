@@ -3,10 +3,10 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 \ The following words are written for the I2C protocol and the display (QAPASS LCD 1602) and expander(PCF8574AT) specifications
 
 : COUNTER_UP					( LINE_COUNTER_value -- )
-	DUP 1 + LINE_COUNTER ! ;		\ It increases the LINE_COUNTER value
+	LINE_COUNTER @ 1 + LINE_COUNTER ! ;		\ It increases the LINE_COUNTER value
 	
 : COUNTER_DOWN					( LINE_COUNTER_value -- )
-	DUP 1 - LINE_COUNTER ! ;		\ It decreases the LINE_COUNTER value
+	LINE_COUNTER @ 1 - LINE_COUNTER ! ;		\ It decreases the LINE_COUNTER value
 
 : SEND						( data -- ) 
 	CLEAR_FIFO				\ It clears the FIFO
