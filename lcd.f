@@ -132,7 +132,30 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	DROP ;
 
 : DISPLAY_CHAR					( ASCII_code -- )
-;
+	LINE_COUNTER @
+	DUP 10 < 
+	IF
+		
+	ELSE
+	DUP 10 =
+	IF
+		SECOND_LINE			\ Sets the cursor position and line_counter to first position of the second line
+	ELSE
+	DUP 20 <
+	IF
+
+	ELSE
+	DUP 20 =
+	IF
+		FIRST_LINE			\ Sets the cursor position and line_counter to first position of the first line
+	THEN
+	THEN
+	THEN
+	THEN
+	DROP ;
+
+
+
 
 
 
