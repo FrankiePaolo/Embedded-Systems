@@ -34,18 +34,19 @@ VARIABLE 							 SIZE
 	UNTIL ;
 
 : BUTTONS					( -- 0/1 )	
-	IS_PRESSED
+	IS_PRESSED				\ Waits for the button to be released
 	GPEDS0 @ 				\ Leaves on the stack either 0 or 1
 	DUP 400 AND BIT_FLAG		
 	IF
+		DROP
 		0 
 	ELSE
 	DUP 200 AND BIT_FLAG
 	IF
+		DROP
 		1
 	THEN 
-	THEN
-	DROP ; 
+	THEN ;
 	
 : LCD_HANDLE					( -- )
 	CURRENT_VALUE @ 			\ Handles display behavior

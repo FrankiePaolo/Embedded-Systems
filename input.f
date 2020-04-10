@@ -34,10 +34,10 @@ VARIABLE 							 SIZE
 	UNTIL ;
 
 : BUTTONS					( -- 0/1 )	
-	IS_PRESSED
-	GPEDS0 @ 				\ Leaves on the stack either 0 or 1
+	IS_PRESSED				\ Waits for the button to be released
+	GPEDS0 @ 				
 	DUP 400 AND BIT_FLAG		
-	IF
+	IF					\ Leaves on the stack either 0 or 1
 		DROP
 		0 
 	ELSE
