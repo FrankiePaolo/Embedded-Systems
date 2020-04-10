@@ -1,4 +1,11 @@
 VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position on the display, 1 to 16(decimal) for the first display line, 17 to 32 (decimal) for the second display line
+1							CONSTANT START_OF_FIRST_LINE
+11							CONSTANT START_OF_SECOND_LINE
+10							CONSTANT END_OF_FIRST_LINE
+20							CONSTANT END_OF_SECOND_LINE
+
+\ This are the hex values of the cursor position starting from 1 for the 16x02 display. If the code needs to be ported to different display sizes these values can easily be updated
+
 
 \ The following words are written for the I2C protocol and the display (QAPASS LCD 1602) and expander(PCF8574AT) specifications
 
@@ -50,7 +57,7 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 
 : CLEAR_DISPLAY					( -- )
 	01 SEND_CMD 				\ It clears the display and sets the cursor to top left corner
-	1 LINE_COUNTER ! ;			\ Sets LINE_COUNTER to first position (1)
+	START_OF_FIRST_LINE LINE_COUNTER ! ;	\ Sets LINE_COUNTER to first position (1)
 
 : DISPLAY_ON					( -- )
 	0F SEND_CMD ;				\ It turns the display ON
@@ -65,34 +72,34 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	
 : FIRST_LINE					( -- )
 	80 SEND_CMD 				\ Sets the cursor position counter to the first position of the first line without easing RAM data
-	1 LINE_COUNTER ! ;			\ Sets LINE_COUNTER to first position (1)
+	START_OF_FIRST_LINE LINE_COUNTER ! ;	\ Sets LINE_COUNTER to first position (1)
 	
 : LAST_FIRST_LINE				( -- )
 	8F SEND_CMD				\ Sets the cursor position counter to last position of the first line without easing RAM data
-	10 LINE_COUNTER ! ;			\ Sets LINE_COUNTER to position 16(dec)
+	END_OF_FIRST_LINE LINE_COUNTER ! ;	\ Sets LINE_COUNTER to position 16(dec)
 		
 : SECOND_LINE					( -- )
 	C0 SEND_CMD 				\ Sets the cursor position counter to the first position of the second line without easing RAM data
-	11 LINE_COUNTER ! ;			\ Sets LINE_COUNTER to position 17(dec)
+	START_OF_SECOND_LINE LINE_COUNTER ! ;	\ Sets LINE_COUNTER to position 17(dec)
 
 : LAST_SECOND_LINE				( -- )
 	CF SEND_CMD				\ Sets the cursor position counter to last position of the second line without easing RAM data
-	20 LINE_COUNTER ! ;			\ Sets LINE_COUNTER to position 32(dec)
+	END_OF_SECOND_LINE LINE_COUNTER ! ;	\ Sets LINE_COUNTER to position 32(dec)
 	
 : LCD_INIT					( -- )
 	FUNCTION_SET				\ It initializes the display
 	100 DELAY
 	DISPLAY_ON 
-	1 LINE_COUNTER ! ;			\ Sets LINE_COUNTER to first position (1)
+	START_OF_FIRST_LINE LINE_COUNTER ! ;	\ Sets LINE_COUNTER to first position (1)
 	
 : DISPLAY_LSHIFT				( -- )
 	LINE_COUNTER @
-	DUP 1 = 
+	DUP START_OF_FIRST_LINE = 
 	IF
 		DROP
 		LAST_SECOND_LINE		\ Sets the cursor position and LINE_COUNTER to last position of the second line
 	ELSE
-	11 =
+	START_OF_SECOND_LINE =
 	IF
 		LAST_FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to last position of the first line
 	ELSE
@@ -102,12 +109,12 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 
 : DISPLAY_RSHIFT				( -- )
 	LINE_COUNTER @
-	DUP 10 =
+	DUP END_OF_FIRST_LINE =
 	IF
 		DROP
 		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
-	20 =
+	END_OF_SECOND_LINE =
 	IF
 		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
 	ELSE
@@ -118,12 +125,12 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 : DISPLAY_CHAR					( ASCII_code -- )
 	SEND_CHAR
 	LINE_COUNTER @
-	DUP 10 =
+	DUP END_OF_FIRST_LINE =
 	IF
 		DROP
 		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
-	20 =
+	END_OF_SECOND_LINE =
 	IF
 		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
 	ELSE

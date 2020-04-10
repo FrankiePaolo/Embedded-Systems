@@ -27,7 +27,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 : MASK  					( offset -- shifted_value )
 	1 SHIFT ;
 : ABS 						( n -- |n| )
-	DUP 0 > IF ELSE NEGATE THEN ;
+	DUP 0 > IF ELSE NEGATE THEN ;		\ It returns the absolute value of n
 	
 : BIT_FLAG					( value -- flag )
 	0 <> ;					\ If value is not 0 it returns TRUE
@@ -42,7 +42,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	SYSTIMER_CL0 @ ;
 	
 : WAIT 						( microseconds -- )
-	CURRENT_TIME				
+	CURRENT_TIME				\ We define a word that requires the time to wait in microseconds on the stack
 	BEGIN
 		DUP CURRENT_TIME		\ Now on the stack: microseconds start_time start_time current_time 	
 		- ABS  				\ Now on the stack: microseconds start_time elapsed_time 
@@ -51,11 +51,11 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	DROP DROP ;
 
 : DELAY 					( steps -- )
-	BEGIN 					\ We wait until steps = 0
+	BEGIN 					\ Busy loops until steps = 0
 		1 - DUP 
 	0 = 
 	UNTIL 
-	DROP ;
+	DROP ;					\ Keeps the stack empty
 		
 : MASK_REGISTER 				( address starting_bit_position bits_num -- masked_register )
 	MASK 1 -				\ Sets a bits_num of bits to 1
@@ -83,7 +83,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	SWAP SET_PUD ;
 
 : SET_GPFSEL					( value pin_number -- )
-	DUP GPFSEL_ADDRESS DUP >R SWAP		\ We define a general word that only requires the pin_number and value to set in the appropriate register
+	DUP GPFSEL_ADDRESS DUP >R SWAP		\ We define a general word that only requires the pin_number and value to set the appropriate GPFSEL register
 	GPFSEL_STARTING_BIT_POSITION		\ We then define more specific words for ease of use
 	3 MASK_REGISTER OR R> ! ;
 
