@@ -2,6 +2,11 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 
 \ The following words are written for the I2C protocol and the display (QAPASS LCD 1602) and expander(PCF8574AT) specifications
 
+: COUNTER_UP					( line_counter_value -- )
+	DUP 1 + LINE_COUNTER ! ;		\ It increases the line_counter value
+	
+: COUNTER_DOWN					( line_counter_value -- )
+	DUP 1 - LINE_COUNTER ! ;		\ It decreases the line_counter value
 
 : SEND						( data -- ) 
 	CLEAR_FIFO				\ It clears the FIFO
@@ -62,7 +67,7 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 
 : SECOND_LINE					( -- )
 	C0 SEND_CMD 				\ It changes the display line to second without easing RAM data
-	17 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
+	11 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
 	
 : LCD_INIT					( -- )
 	FUNCTION_SET				\ It initializes the display
@@ -75,7 +80,16 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	LINE_COUNTER @
 	DUP 1 = 
 	IF
-		4E SEND_CMD			\ Sets the cursor position counter to last position of second line
+		4E SEND_CMD			\ Sets the cursor position counter to last position of the second line
+	ELSE
+	DUP 11 <
+	IF 
+		LSHIFT_CMD			\ Shifts the display to the left
+		COUNTER_DOWN			\ Decreases the line_counter value
+	ELSE
+	DUP 11 =
+	IF
+		F SEND_CMD			\ Sets the cursor position counter to last position of the first line
 
 
 
