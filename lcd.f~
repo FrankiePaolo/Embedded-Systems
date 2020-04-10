@@ -60,8 +60,9 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	COUNTER_DOWN ;				\ Decreases the LINE_COUNTER value
 	
 : RSHIFT_CMD					( -- )
-	17 SEND_CMD ;				\ It shifts the display to the right
-
+	17 SEND_CMD 				\ It shifts the display to the right
+	COUNTER_UP ;
+	
 : FIRST_LINE					( -- )
 	80 SEND_CMD 				\ It changes the display line to first without easing RAM data
 	1 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
@@ -161,14 +162,5 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	THEN
 	THEN ;
 
-
-
-
-
-
-
-
-
-	
 	
 	
