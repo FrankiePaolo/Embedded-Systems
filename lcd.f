@@ -40,9 +40,6 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	DUP D + SEND
 	9 + SEND 
 	DROP ;
-	
-: DROP_SEND					( ASCII_code value_to_drop --)
-	DROP SEND_CHAR ;			\ Drops the first item on the stack and sends the ASCII_code to be displayed
 
 \ The display functions are specified in the QAPASS 1602 LCD datasheet
 \ Note: when we first turn the display on it is in 8 bit mode
@@ -119,21 +116,20 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	DROP ;
 
 : DISPLAY_CHAR					( ASCII_code -- )
+	SEND_CHAR
 	LINE_COUNTER @
 	DUP 10 =
 	IF
-		DROP_SEND			\ We make sure not to leave the LINE_COUNTER content on the stack, then we send the character to be displayed
 		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
 	DUP 20 =
 	IF
-		DROP_SEND			\ We make sure not to leave the LINE_COUNTER content on the stack, then we send the character to be displayed
 		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
 	ELSE
-		DROP_SEND			\ We make sure not to leave the LINE_COUNTER content on the stack, then we send the character to be displayed
 		LINE_COUNTER++
 	THEN
-	THEN ;
+	THEN 
+	DROP ;
 
 	
 	
