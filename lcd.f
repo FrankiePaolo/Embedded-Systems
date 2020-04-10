@@ -1,12 +1,12 @@
-VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position on the display 
+VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position on the display, 1 to 16(decimal) for the first display line, 17 to 32 (decimal) for the second display line
 
 \ The following words are written for the I2C protocol and the display (QAPASS LCD 1602) and expander(PCF8574AT) specifications
 
-: COUNTER_UP					( LINE_COUNTER_value -- )
-	LINE_COUNTER @ 1 + LINE_COUNTER ! ;		\ It increases the LINE_COUNTER value
+: LINE_COUNTER++				( LINE_COUNTER_value -- )
+	LINE_COUNTER @ 1 + LINE_COUNTER ! ;	\ It increases the LINE_COUNTER value
 	
-: COUNTER_DOWN					( LINE_COUNTER_value -- )
-	LINE_COUNTER @ 1 - LINE_COUNTER ! ;		\ It decreases the LINE_COUNTER value
+: LINE_COUNTER--				( LINE_COUNTER_value -- )
+	LINE_COUNTER @ 1 - LINE_COUNTER ! ;	\ It decreases the LINE_COUNTER value
 
 : SEND						( data -- ) 
 	CLEAR_FIFO				\ It clears the FIFO
@@ -57,17 +57,17 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	
 : LSHIFT_CMD					( -- )
 	13 SEND_CMD 				\ It shifts the display to the left
-	COUNTER_DOWN ;				\ Decreases the LINE_COUNTER value
+	LINE_COUNTER-- ;			\ Decreases the LINE_COUNTER value
 	
 : RSHIFT_CMD					( -- )
 	17 SEND_CMD 				\ It shifts the display to the right
-	COUNTER_UP ;				\ Increases the LINE_COUNTER value
+	LINE_COUNTER++ ;			\ Increases the LINE_COUNTER value
 	
 : FIRST_LINE					( -- )
 	80 SEND_CMD 				\ It changes the display line to first without easing RAM data
 	1 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
 	
-: L_FIRST_LINE					( -- )
+: LAST_FIRST_LINE				( -- )
 	F SEND_CMD				\ Sets the cursor position counter to last position of the first line
 	10 LINE_COUNTER ! ;			\ Sets the cursor position counter to 16(dec)
 		
@@ -75,7 +75,7 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	C0 SEND_CMD 				\ It changes the display line to second without easing RAM data
 	11 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
 
-: L_SECOND_LINE					( -- )
+: LAST_SECOND_LINE				( -- )
 	4E SEND_CMD				\ Sets the cursor position counter to last position of the second line
 	20 LINE_COUNTER ! ;			\ Sets the cursor position counter to 32(dec)
 	
@@ -85,80 +85,53 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	DISPLAY_ON 
 	1 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
 	
-	
 : DISPLAY_LSHIFT				( -- )
 	LINE_COUNTER @
 	DUP 1 = 
 	IF
-		L_SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to last position of the second line
-	ELSE
-	DUP 11 <
-	IF 
-		LSHIFT_CMD			\ Shifts the display to the left and decreases the LINE_COUNTER value
+		LAST_SECOND_LINE		\ Sets the cursor position and LINE_COUNTER to last position of the second line
 	ELSE
 	DUP 11 =
 	IF
-		L_FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to last position of the first line
+		LAST_FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to last position of the first line
 	ELSE
-	DUP 21 <
-	IF
 		LSHIFT_CMD			\ Shifts the display to the left and decreases the LINE_COUNTER value
-	THEN
-	THEN
 	THEN
 	THEN
 	DROP ;
 
 : DISPLAY_RSHIFT				( -- )
 	LINE_COUNTER @
-	DUP 10 < 
-	IF
-		RSHIFT_CMD			\ It shifts the display to the right
-	ELSE
 	DUP 10 =
 	IF
 		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
-	DUP 20 <
-	IF
-		RSHIFT_CMD			\ It shifts the display to the right
-	ELSE
 	DUP 20 =
 	IF
 		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
-	THEN
-	THEN
+	ELSE
+		RSHIFT_CMD			\ It shifts the display to the right
 	THEN
 	THEN
 	DROP ;
 
 : DISPLAY_CHAR					( ASCII_code -- )
 	LINE_COUNTER @
-	DUP 10 < 
-	IF
-		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
-		SEND_CHAR			\ We send the character to be displayed
-		COUNTER_UP
-	ELSE
 	DUP 10 =
 	IF
 		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
 		SEND_CHAR			\ We send the character to be displayed
 		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
-	DUP 20 <
-	IF
-		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
-		SEND_CHAR			\ We send the character to be displayed
-		COUNTER_UP
-	ELSE
 	DUP 20 =
 	IF
 		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
 		SEND_CHAR			\ We send the character to be displayed
 		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
-	THEN
-	THEN
+	ELSE
+		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
+		SEND_CHAR			\ We send the character to be displayed
+		LINE_COUNTER++
 	THEN
 	THEN ;
 
