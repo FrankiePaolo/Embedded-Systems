@@ -2,11 +2,11 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 
 \ The following words are written for the I2C protocol and the display (QAPASS LCD 1602) and expander(PCF8574AT) specifications
 
-: COUNTER_UP					( line_counter_value -- )
-	DUP 1 + LINE_COUNTER ! ;		\ It increases the line_counter value
+: COUNTER_UP					( LINE_COUNTER_value -- )
+	DUP 1 + LINE_COUNTER ! ;		\ It increases the LINE_COUNTER value
 	
-: COUNTER_DOWN					( line_counter_value -- )
-	DUP 1 - LINE_COUNTER ! ;		\ It decreases the line_counter value
+: COUNTER_DOWN					( LINE_COUNTER_value -- )
+	DUP 1 - LINE_COUNTER ! ;		\ It decreases the LINE_COUNTER value
 
 : SEND						( data -- ) 
 	CLEAR_FIFO				\ It clears the FIFO
@@ -57,7 +57,7 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	
 : LSHIFT_CMD					( -- )
 	13 SEND_CMD 				\ It shifts the display to the left
-	COUNTER_DOWN ;				\ Decreases the line_counter value
+	COUNTER_DOWN ;				\ Decreases the LINE_COUNTER value
 	
 : RSHIFT_CMD					( -- )
 	17 SEND_CMD ;				\ It shifts the display to the right
@@ -89,19 +89,19 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	LINE_COUNTER @
 	DUP 1 = 
 	IF
-		L_SECOND_LINE			\ Sets the cursor position and line_counter to last position of the second line
+		L_SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to last position of the second line
 	ELSE
 	DUP 11 <
 	IF 
-		LSHIFT_CMD			\ Shifts the display to the left and decreases the line_counter value
+		LSHIFT_CMD			\ Shifts the display to the left and decreases the LINE_COUNTER value
 	ELSE
 	DUP 11 =
 	IF
-		L_FIRST_LINE			\ Sets the cursor position and line_counter to last position of the first line
+		L_FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to last position of the first line
 	ELSE
 	DUP 21 <
 	IF
-		LSHIFT_CMD			\ Shifts the display to the left and decreases the line_counter value
+		LSHIFT_CMD			\ Shifts the display to the left and decreases the LINE_COUNTER value
 	THEN
 	THEN
 	THEN
@@ -116,7 +116,7 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	ELSE
 	DUP 10 =
 	IF
-		SECOND_LINE			\ Sets the cursor position and line_counter to first position of the second line
+		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
 	DUP 20 <
 	IF
@@ -124,7 +124,7 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	ELSE
 	DUP 20 =
 	IF
-		FIRST_LINE			\ Sets the cursor position and line_counter to first position of the first line
+		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
 	THEN
 	THEN
 	THEN
@@ -135,32 +135,31 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	LINE_COUNTER @
 	DUP 10 < 
 	IF
-		
+		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
+		SEND_CHAR			\ We send the character to be displayed
+		COUNTER_UP
 	ELSE
 	DUP 10 =
 	IF
-		SECOND_LINE			\ Sets the cursor position and line_counter to first position of the second line
+		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
+		SEND_CHAR			\ We send the character to be displayed
+		SECOND_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the second line
 	ELSE
 	DUP 20 <
 	IF
-
+		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
+		SEND_CHAR			\ We send the character to be displayed
+		COUNTER_UP
 	ELSE
 	DUP 20 =
 	IF
-		FIRST_LINE			\ Sets the cursor position and line_counter to first position of the first line
+		DROP				\ We make sure not to leave the LINE_COUNTER content on the stack
+		SEND_CHAR			\ We send the character to be displayed
+		FIRST_LINE			\ Sets the cursor position and LINE_COUNTER to first position of the first line
 	THEN
 	THEN
 	THEN
-	THEN
-	DROP ;
+	THEN ;
 
-
-
-
-
-
-
-
-	
 	
 	

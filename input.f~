@@ -37,8 +37,8 @@ VARIABLE 							 SIZE
 	IS_PRESSED				\ Waits for the button to be released
 	GPEDS0 @ 				
 	DUP 400 AND BIT_FLAG		
-	IF					\ Leaves on the stack either 0 or 1
-		DROP				\ We make sure not to leave the GPEDS0 content on the stack
+	IF					\ We make sure not to leave the GPEDS0 content on the stack
+		DROP				\ Leaves on the stack either 0 or 1
 		0 
 	ELSE
 	DUP 200 AND BIT_FLAG
@@ -70,7 +70,7 @@ VARIABLE 							 SIZE
 	IF
 		SECOND_LINE
 	ELSE
-		DUP SEND_CHAR
+		DUP DISPLAY_CHAR
 	THEN
 	THEN
 	THEN 
@@ -79,20 +79,20 @@ VARIABLE 							 SIZE
 	DROP ;
 	
 : WELCOME					( -- )
-	57 SEND_CHAR				\ Displays word WELCOME
-	45 SEND_CHAR
-	4C SEND_CHAR
-	43 SEND_CHAR
-	4F SEND_CHAR
-	4D SEND_CHAR
-	45 SEND_CHAR 
-	21 SEND_CHAR
+	57 DISPLAY_CHAR				\ Displays word WELCOME
+	45 DISPLAY_CHAR
+	4C DISPLAY_CHAR
+	43 DISPLAY_CHAR
+	4F DISPLAY_CHAR
+	4D DISPLAY_CHAR
+	45 DISPLAY_CHAR 
+	21 DISPLAY_CHAR
 	SECOND_LINE
 	DISPLAY_RSHIFT
-	76 SEND_CHAR
-	30 SEND_CHAR
-	2E SEND_CHAR
-	31 SEND_CHAR
+	76 DISPLAY_CHAR
+	30 DISPLAY_CHAR
+	2E DISPLAY_CHAR
+	31 DISPLAY_CHAR
 	1D0900 WAIT
 	CLEAR_DISPLAY ;
 	

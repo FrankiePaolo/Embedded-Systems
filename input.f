@@ -37,9 +37,9 @@ VARIABLE 							 SIZE
 	IS_PRESSED				\ Waits for the button to be released
 	GPEDS0 @ 				
 	DUP 400 AND BIT_FLAG		
-	IF					\ Leaves on the stack either 0 or 1
+	IF					
 		DROP				\ We make sure not to leave the GPEDS0 content on the stack
-		0 
+		0 				\ Leaves on the stack either 0 or 1
 	ELSE
 	DUP 200 AND BIT_FLAG
 	IF
