@@ -52,25 +52,25 @@ VARIABLE 							 SIZE
 	CURRENT_VALUE @ 			\ Handles display behavior
 	DUP 10 =			 	\ ASCII Values less than 32 are control characters so we use them for the display functions
 	IF					
-		CLEAR_DISPLAY
+		CLEAR_DISPLAY			\ Clears the display
 	ELSE
 	DUP 11 =
 	IF
-		DISPLAY_LSHIFT
+		DISPLAY_LSHIFT			\ Shifts the display to the left
 	ELSE
 	DUP 12 =
 	IF
-		DISPLAY_RSHIFT
+		DISPLAY_RSHIFT			\ Shifts the display to the right
 	ELSE
 	DUP 13 =
 	IF
-		FIRST_LINE
+		FIRST_LINE			\ Sets the cursor position counter to the first position of the first line without easing RAM data
 	ELSE
 	DUP 14 =
-	IF
-		SECOND_LINE
+	IF	
+		SECOND_LINE			\ Sets the cursor position counter to the first position of the second line without easing RAM data
 	ELSE
-		DUP DISPLAY_CHAR
+		DUP DISPLAY_CHAR		\ Displays the character, but avoids sending it to memory cells not shown on the 16x02 display
 	THEN
 	THEN
 	THEN 
