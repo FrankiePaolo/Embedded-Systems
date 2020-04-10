@@ -38,14 +38,15 @@ VARIABLE 							 SIZE
 	GPEDS0 @ 				\ Leaves on the stack either 0 or 1
 	DUP 400 AND BIT_FLAG		
 	IF
+		DROP
 		0 
 	ELSE
 	DUP 200 AND BIT_FLAG
 	IF
+		DROP
 		1
 	THEN 
-	THEN
-	DROP ; 
+	THEN ;
 	
 : LCD_HANDLE					( -- )
 	CURRENT_VALUE @ 			\ Handles display behavior
@@ -69,7 +70,7 @@ VARIABLE 							 SIZE
 	IF
 		SECOND_LINE
 	ELSE
-		CURRENT_VALUE @ SEND_CHAR
+		DUP SEND_CHAR
 	THEN
 	THEN
 	THEN 
