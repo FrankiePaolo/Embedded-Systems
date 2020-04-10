@@ -1,3 +1,5 @@
+VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position on the display 
+
 \ The following words are written for the I2C protocol and the display (QAPASS LCD 1602) and expander(PCF8574AT) specifications
 
 
@@ -10,10 +12,10 @@
 	START_TRANSFER  			\ It starts the transfer
 	CHECK_STATUS ; 				\ It checks that the transfer is done
 	
-: 4LSB						( -- )
+: 4LSB						( cmd -- 4lsb )
 	F AND 4 LSHIFT ;			\ These are the 4 least significant bits
 	
-: 4MSB						( -- )
+: 4MSB						( cmd -- 4msb )
 	F0 AND ;				\ These are the 4 most significant bits
 	
 : SEND_CMD					( cmd -- )
@@ -42,27 +44,52 @@
 	88 SEND ;				\ D3-D2-D1-D0=1010 (LSB) BL=1 EN=0 RW=0 RS=0
 
 : CLEAR_DISPLAY					( -- )
-	01 SEND_CMD ;				\ It clears the display
+	01 SEND_CMD 				\ It clears the display and sets the cursor to top left corner
+	1 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
 
 : DISPLAY_ON					( -- )
 	0F SEND_CMD ;				\ It turns the display ON
 	
-: DISPLAY_LSHIFT				( -- )
+: LSHIFT_CMD					( -- )
 	13 SEND_CMD ;				\ It shifts the display to the left
 	
-: DISPLAY_RSHIFT				( -- )
+: RSHIFT_CMD					( -- )
 	17 SEND_CMD ;				\ It shifts the display to the right
 
 : FIRST_LINE					( -- )
-	80 SEND_CMD ;				\ It changes the display line to first without easing RAM data
+	80 SEND_CMD 				\ It changes the display line to first without easing RAM data
+	1 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
 
 : SECOND_LINE					( -- )
-	C0 SEND_CMD ;				\ It changes the display line to second without easing RAM data
+	C0 SEND_CMD 				\ It changes the display line to second without easing RAM data
+	17 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
 	
 : LCD_INIT					( -- )
 	FUNCTION_SET				\ It initializes the display
 	100 DELAY
-	DISPLAY_ON ;
+	DISPLAY_ON 
+	1 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
+	
+	
+: DISPLAY_LSHIFT
+	LINE_COUNTER @
+	DUP 1 = 
+	IF
+		4E SEND_CMD			\ Sets the cursor position counter to last position of second line
+
+
+
+
+: DISPLAY_RSHIFT
+
+
+: DISPLAY_CHAR					( ASCII_code -- )
+
+
+
+
+
+
 	
 	
 	
