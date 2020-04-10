@@ -50,7 +50,7 @@ VARIABLE 							 SIZE
 	
 : LCD_HANDLE					( -- )
 	CURRENT_VALUE @ 			\ Handles display behavior
-	DUP 10 =			 	\ ASCII Values less than 32 are control characters so we use them for the display functions
+	DUP 10 =			 	\ ASCII Values less than 32 are control characters so we use 4 of them for the display functions we wish to implement
 	IF					
 		CLEAR_DISPLAY			\ Clears the display
 	ELSE
@@ -80,21 +80,21 @@ VARIABLE 							 SIZE
 	
 : WELCOME					( -- )
 	57 DISPLAY_CHAR				\ Displays word WELCOME
-	45 DISPLAY_CHAR
+	45 DISPLAY_CHAR				\ We send all the characters of the word we wish to display at power on
 	4C DISPLAY_CHAR
 	43 DISPLAY_CHAR
 	4F DISPLAY_CHAR
 	4D DISPLAY_CHAR
 	45 DISPLAY_CHAR 
-	21 DISPLAY_CHAR
-	SECOND_LINE
-	DISPLAY_RSHIFT
+	21 DISPLAY_CHAR	
+	SECOND_LINE				\ We wish to display the second word in the second line
+	DISPLAY_RSHIFT				\ And we shift right from the start of the line
 	76 DISPLAY_CHAR
 	30 DISPLAY_CHAR
 	2E DISPLAY_CHAR
 	31 DISPLAY_CHAR
-	1D0900 WAIT
-	CLEAR_DISPLAY ;
+	1D0900 WAIT				\ We wait for the given time (in microseconds, hex value)
+	CLEAR_DISPLAY ;				\ We clear the display, set the cursor to the start of the first line and reset the LINE_COUNTER
 	
 : INPUT						( -- )
 	BEGIN 					
