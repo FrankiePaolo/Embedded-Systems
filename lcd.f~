@@ -56,7 +56,8 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	0F SEND_CMD ;				\ It turns the display ON
 	
 : LSHIFT_CMD					( -- )
-	13 SEND_CMD ;				\ It shifts the display to the left
+	13 SEND_CMD 				\ It shifts the display to the left
+	COUNTER_DOWN ;				\ Decreases the line_counter value
 	
 : RSHIFT_CMD					( -- )
 	17 SEND_CMD ;				\ It shifts the display to the right
@@ -64,10 +65,18 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 : FIRST_LINE					( -- )
 	80 SEND_CMD 				\ It changes the display line to first without easing RAM data
 	1 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
-
+	
+: L_FIRST_LINE					( -- )
+	F SEND_CMD				\ Sets the cursor position counter to last position of the first line
+	10 LINE_COUNTER ! ;			\ Sets the cursor position counter to 16(dec)
+		
 : SECOND_LINE					( -- )
 	C0 SEND_CMD 				\ It changes the display line to second without easing RAM data
 	11 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
+
+: L_SECOND_LINE					( -- )
+	4E SEND_CMD				\ Sets the cursor position counter to last position of the second line
+	20 LINE_COUNTER ! ;			\ Sets the cursor position counter to 32(dec)
 	
 : LCD_INIT					( -- )
 	FUNCTION_SET				\ It initializes the display
@@ -76,7 +85,7 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	1 LINE_COUNTER ! ;			\ Sets the cursor position counter to first position
 	
 	
-: DISPLAY_LSHIFT
+: DISPLAY_LSHIFT				( -- )
 	LINE_COUNTER @
 	DUP 1 = 
 	IF
@@ -84,21 +93,28 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 	ELSE
 	DUP 11 <
 	IF 
-		LSHIFT_CMD			\ Shifts the display to the left
-		COUNTER_DOWN			\ Decreases the line_counter value
+		LSHIFT_CMD			\ Shifts the display to the left and decreases the line_counter value
 	ELSE
 	DUP 11 =
 	IF
-		F SEND_CMD			\ Sets the cursor position counter to last position of the first line
+		L_FIRST_LINE			\ Sets the cursor position counter to last position of the first line
+	ELSE
+	DUP 21 <
+	IF
+		LSHIFT_CMD			\ Shifts the display to the left and decreases the line_counter value
+	THEN
+	THEN
+	THEN
+	THEN
+	DROP ;
+
+: DISPLAY_RSHIFT				( -- )
 
 
-
-
-: DISPLAY_RSHIFT
 
 
 : DISPLAY_CHAR					( ASCII_code -- )
-
+;
 
 
 
