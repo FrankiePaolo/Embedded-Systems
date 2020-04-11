@@ -64,16 +64,26 @@ VARIABLE 							 SIZE
 	ELSE
 	DUP 13 =
 	IF
-		FIRST_LINE			\ Sets the cursor position counter to the first position of the first line without easing RAM data
+		FIRST_LINE			\ Sets the cursor position to the first position of the first line without easing RAM data
 	ELSE
 	DUP 14 =
+	IF
+		LAST_FIRST_LINE			\ Sets the cursor position to last position of the first line
+	ELSE
+	DUP 15 =
+	IF
+		SECOND_LINE			\ Sets the cursor position to the second position of the first line without easing RAM data
+	ELSE
+	DUP 16 =
 	IF	
-		SECOND_LINE			\ Sets the cursor position counter to the first position of the second line without easing RAM data
+		LAST_SECOND_LINE		\ Sets the cursor position to last position of the second line
 	ELSE
 		DUP DISPLAY_CHAR		\ Displays the character, but avoids sending it to memory cells not shown on the 16x02 display
 	THEN
 	THEN
 	THEN 
+	THEN
+	THEN
 	THEN
 	THEN 
 	DROP ;
