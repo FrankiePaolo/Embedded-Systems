@@ -31,6 +31,9 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	
 : BIT_FLAG					( value -- flag )
 	0 <> ;					\ If value is not 0 it returns TRUE
+
+: CHECK						( v1 v2 -- flag )
+	SWAP DUP ROT AND BIT_FLAG ;		\ Performs the AND between 2 values and returns a flag 
 	
 : MILLISECONDS 					( seconds -- milliseconds )
 	3E8 * ;				
@@ -56,7 +59,21 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	0 = 
 	UNTIL 
 	DROP ;					\ Keeps the stack empty
-		
+ 	
+: WITHIN					( a b c -- p )		\ Where p = ((a >= b) && (a < c))
+	-ROT					( b c a )
+	OVER					( b c a c )
+	<= IF
+		> IF				( b c -- )
+			TRUE
+		ELSE
+			FALSE
+		THEN
+	ELSE
+		2DROP				( b c -- )
+		FALSE
+	THEN ;
+
 : MASK_REGISTER 				( address starting_bit_position bits_num -- masked_register )
 	MASK 1 -				\ Sets a bits_num of bits to 1
 	SHIFT INVERT				\ Shifts those bits by starting_bit_position and then inverts the bits
@@ -164,5 +181,5 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	FALLING_EDGE_DETECT_SET_9		\ A falling edge transition in GPIO 9 and GPIO 10 sets a bit in the event detect status registers 
 	FALLING_EDGE_DETECT_SET_10 ;
 	
-
+	
 
