@@ -4,7 +4,7 @@ VARIABLE 							 LINE_COUNTER	\ This variable keeps track of the cursor position
 10							CONSTANT END_OF_FIRST_LINE
 20							CONSTANT END_OF_SECOND_LINE
 
-\ This are the hex values of the cursor position starting from 1 for the 16x02 display. If the code needs to be ported to different display sizes these values can easily be updated
+\ This are the hex values of the cursor position starting from 1 for the 16x02 display. If the code needs to be ported to different display sizes these values can simply be changed
 
 
 \ The following words are written for the I2C protocol and the display (QAPASS LCD 1602) and expander(PCF8574AT) specifications

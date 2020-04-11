@@ -80,7 +80,7 @@ VARIABLE 							 SIZE
 	
 : WELCOME					( -- )
 	57 DISPLAY_CHAR				\ Displays word WELCOME
-	45 DISPLAY_CHAR
+	45 DISPLAY_CHAR				\ We send all the characters of the word we wish to display at power on
 	4C DISPLAY_CHAR
 	43 DISPLAY_CHAR
 	4F DISPLAY_CHAR

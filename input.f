@@ -1,6 +1,6 @@
 VARIABLE 							 CURRENT_VALUE
 VARIABLE 							 SIZE 
-8 							CONSTANT SIZE_REQUESTED 			\ Size of display command ( in our instance it's a byte )		
+8 							CONSTANT SIZE_REQUESTED 			\ Size of display command ( in our instance it's a byte , 8 bit ASCII )		
 
 
 

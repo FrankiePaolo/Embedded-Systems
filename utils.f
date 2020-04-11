@@ -13,7 +13,7 @@ GPIO_BASE 58 	 +					CONSTANT GPFEN0
 GPIO_BASE 94 	 +					CONSTANT GPPUD				
 GPIO_BASE 98 	 +					CONSTANT GPPUDCLK0			
 PERI_BASE 3000   +	 				CONSTANT TIMER_BASE
-TIMER_BASE 4 	 +					CONSTANT SYSTIMER_CL0
+TIMER_BASE 4 	 +					CONSTANT SYSTIMER_CLO
 PERI_BASE 804000 + 					CONSTANT BSC1_BASE
 BSC1_BASE 4 + 						CONSTANT STATUS    		
 BSC1_BASE 8 +						CONSTANT DLEN 			\ Data length
@@ -39,7 +39,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	F4240 * ;			
 
 : CURRENT_TIME 					( -- time )
-	SYSTIMER_CL0 @ ;
+	SYSTIMER_CLO @ ;			\ We only use the lower 32 bits of the system timer
 	
 : WAIT 						( microseconds -- )
 	CURRENT_TIME				\ We define a word that requires the time to wait in microseconds on the stack

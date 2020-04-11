@@ -13,7 +13,7 @@ GPIO_BASE 58 	 +					CONSTANT GPFEN0
 GPIO_BASE 94 	 +					CONSTANT GPPUD				
 GPIO_BASE 98 	 +					CONSTANT GPPUDCLK0			
 PERI_BASE 3000   +	 				CONSTANT TIMER_BASE
-TIMER_BASE 4 	 +					CONSTANT SYSTIMER_CL0
+TIMER_BASE 4 	 +					CONSTANT SYSTIMER_CLO
 PERI_BASE 804000 + 					CONSTANT BSC1_BASE
 BSC1_BASE 4 + 						CONSTANT STATUS    		
 BSC1_BASE 8 +						CONSTANT DLEN 			\ Data length
@@ -39,7 +39,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	F4240 * ;			
 
 : CURRENT_TIME 					( -- time )
-	SYSTIMER_CL0 @ ;
+	SYSTIMER_CLO @ ;
 	
 : WAIT 						( microseconds -- )
 	CURRENT_TIME				\ We define a word that requires the time to wait in microseconds on the stack
@@ -55,7 +55,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 		1 - DUP 
 	0 = 
 	UNTIL 
-	DROP ;
+	DROP ;					\ Keeps the stack empty
 		
 : MASK_REGISTER 				( address starting_bit_position bits_num -- masked_register )
 	MASK 1 -				\ Sets a bits_num of bits to 1
@@ -67,7 +67,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	GPIO_BASE  + ;				\ the address of the appropriate GPFSEL function select register 
 
 : GPFSEL_STARTING_BIT_POSITION			( pin_number -- starting_bit_position )
-	A MOD 3 * ;				\ starting_bit_position for the FSEL field in the appropriate GPFSEL register
+	A MOD 3 * ;				\ starting_bit_position for the appropriate FSEL field in the appropriate GPFSEL register
 
 : SET_PUD					( GPPUDCLK0_MASK UP/DOWN -- )
 	GPPUD !
