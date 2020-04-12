@@ -3,9 +3,11 @@ CREATE USER_FUNCTIONS ' CLEAR_DISPLAY , ' DISPLAY_LSHIFT , ' DISPLAY_RSHIFT , ' 
 
 VARIABLE 							 CURRENT_VALUE
 VARIABLE 							 SIZE 
+VARIABLE							 CHAR_COUNTER
 8 							CONSTANT SIZE_REQUESTED 			\ Size of display command ( in our instance it's a byte , 8 bit ASCII )		
 
-
+: CHAR_COUNTER--				( -- CHAR_COUNTER )
+	CHAR_COUNTER @ 1 - DUP CHAR_COUNTER ! ;	\ Decreases the CHAR_COUNTER and leaves a copy on the stack
 
 : SETUP						( -- )		
 	SETUP_GPIO_9				
@@ -25,7 +27,7 @@ VARIABLE 							 SIZE
 	600 OR 
 	GPEDS0 ! ; 					
 	
-: IS_PRESSED					( -- )
+: ?IS_PRESSED					( -- )
 	BEGIN					\ Waits until the button has been released	
 		STATUS_MASK 
 		GPEDS0 @ AND 
@@ -37,14 +39,14 @@ VARIABLE 							 SIZE
 	UNTIL ;
 
 : BUTTONS					( -- 0/1 )	
-	IS_PRESSED				\ Waits for the button to be released
+	?IS_PRESSED				\ Waits for the button to be released
 	GPEDS0 @ 				
-	400 CHECK		
+	400 CHECK				( v1 v2 -- flag )
 	IF					
 		DROP				\ We make sure not to leave the GPEDS0 content on the stack
 		0 				\ Leaves on the stack either 0 or 1
 	ELSE
-	200 CHECK
+	200 CHECK				
 	IF
 		DROP
 		1
@@ -66,21 +68,27 @@ VARIABLE 							 SIZE
 		DISPLAY_CHAR			\ If it's not a function it displays the character
 	THEN ;
 	
-: WELCOME					( -- )
-	57 DISPLAY_CHAR				\ Displays word WELCOME
-	45 DISPLAY_CHAR				\ We send all the characters of the word we wish to display at power on
-	4C DISPLAY_CHAR
-	43 DISPLAY_CHAR
-	4F DISPLAY_CHAR
-	4D DISPLAY_CHAR
-	45 DISPLAY_CHAR 
-	21 DISPLAY_CHAR	
+: ?WITHIN_LCD_SIZE				( n -- )
+	1 32 WITHIN ;				\ We can only display up to 32 characters on the display
+
+: DISPLAY_CHARS 				( n -- )
+	DUP ?WITHIN_LCD_SIZE 
+	IF
+		CHAR_COUNTER !
+		BEGIN
+			DISPLAY_CHAR
+			CHAR_COUNTER--
+			0 =
+		UNTIL 
+	ELSE 
+		DROP
+	THEN ;	
+	
+: WELCOME					( -- ) \ We send here all the characters of the words we wish to display at power on 
+	21 45 4D 4F 43 4C 45 57 8 DISPLAY_CHARS	\ Displays WELCOME!  
 	SECOND_LINE				\ We wish to display the second word in the second line
 	DISPLAY_RSHIFT				\ And we shift right from the start of the line
-	76 DISPLAY_CHAR
-	30 DISPLAY_CHAR
-	2E DISPLAY_CHAR
-	31 DISPLAY_CHAR
+	31 2E 30 76 4 DISPLAY_CHARS		\ Displays v0.1
 	1D0900 WAIT				\ We wait for the given time (in microseconds, hex value)
 	CLEAR_DISPLAY ;				\ We clear the display, set the cursor to the start of the first line and reset the LINE_COUNTER
 	
