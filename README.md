@@ -1,6 +1,7 @@
 Embedded Systems
 
-Resources
+Resources :
+
 BCM 2835 datasheet :
 https://www.raspberrypi.org/app/uploads/2012/02/BCM2835-ARM-Peripherals.pdf
 
