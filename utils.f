@@ -158,10 +158,10 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	DONE 
 	UNTIL ;
 	
-: FALLING_EDGE_DETECT_SET_9			( -- )
+: FALLING_EDGE_SET_9				( -- )
 	200 9 1 SET_GPFEN0 ;			\ A falling edge transition in GPIO 9 sets a bit in the event detect status registers
 	
-: FALLING_EDGE_DETECT_SET_10			( -- )
+: FALLING_EDGE_SET_10				( -- )
 	400 10 1 SET_GPFEN0 ;			\ A falling edge transition in GPIO 10 sets a bit in the event detect status registers
 	
 : SETUP_GPIO_9 					( -- )		
@@ -177,9 +177,9 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	SET_ALT0_3				\ SDA for data and SCL for the clock
 	SET_I2CEN ;				\ Enables the BSC controller
 	
-: FALLING_EDGE_DETECT_SET			( -- )
-	FALLING_EDGE_DETECT_SET_9		\ A falling edge transition in GPIO 9 and GPIO 10 sets a bit in the event detect status registers 
-	FALLING_EDGE_DETECT_SET_10 ;
+: FALLING_EDGE_SET				( -- )
+	FALLING_EDGE_SET_9			\ A falling edge transition in GPIO 9 and GPIO 10 sets a bit in the event detect status registers 
+	FALLING_EDGE_SET_10 ;
 	
 	
 

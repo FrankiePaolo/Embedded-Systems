@@ -41,12 +41,12 @@ VARIABLE							 CHAR_COUNTER
 : BUTTONS					( -- 0/1 )	
 	?IS_PRESSED				\ Waits for the button to be released
 	GPEDS0 @ 				
-	400 CHECK		
+	400 CHECK				( v1 v2 -- flag )
 	IF					
 		DROP				\ We make sure not to leave the GPEDS0 content on the stack
 		0 				\ Leaves on the stack either 0 or 1
 	ELSE
-	200 CHECK
+	200 CHECK				
 	IF
 		DROP
 		1

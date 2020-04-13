@@ -80,7 +80,7 @@ BSC1_BASE 10 +						CONSTANT FIFO			\ Data FIFO
 	SWAP @ AND ;				\ Performs a logic AND between the current content of the register and the mask	
 	
 : GPFSEL_ADDRESS 				( pin_number -- GPFSEL_address )
-	A / CELLS *				\ We put the GPIO pin number on the stack and get
+	A / 4 *					\ We put the GPIO pin number on the stack and get
 	GPIO_BASE  + ;				\ the address of the appropriate GPFSEL function select register 
 
 : GPFSEL_STARTING_BIT_POSITION			( pin_number -- starting_bit_position )
