@@ -1,4 +1,4 @@
-Embedded Systems
+Embedded Systems Project, Università di Palermo, 2019-2020
 
 Resources :
 
