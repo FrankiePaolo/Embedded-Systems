@@ -57,7 +57,7 @@ VARIABLE							 CHAR_COUNTER
 	CELLS USER_FUNCTIONS + @ EXECUTE ;	\ We execute the xt of the nth user function in USER_FUNCTIONS
 
 : ?IS_VALID 					( CURRENT_VALUE )
-	10 16 WITHIN ;				\ We check that the value is within the specified range
+	10 17 WITHIN ;				\ We check that the value is within the specified range
 
 : LCD_HANDLE					( -- )
 	CURRENT_VALUE @
@@ -69,7 +69,7 @@ VARIABLE							 CHAR_COUNTER
 	THEN ;
 	
 : ?WITHIN_LCD_SIZE				( n -- )
-	1 32 WITHIN ;				\ We can only display up to 32 characters on the display
+	1 33 WITHIN ;				\ We can only display up to 32 characters on the display
 
 : DISPLAY_CHARS 				( n -- )
 	DUP ?WITHIN_LCD_SIZE 
